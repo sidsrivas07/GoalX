@@ -1,0 +1,156 @@
+.cal-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.cal-modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+}
+
+.cal-modal-container {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  padding: 24px;
+  background: rgba(18, 18, 18, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
+}
+
+.cal-modal-header {
+  margin-bottom: 24px;
+}
+
+.cal-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.2s;
+}
+
+.cal-modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+}
+
+.cal-modal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 0 40px;
+}
+
+.cal-modal-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.cal-modal-nav-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+
+.cal-modal-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--orange-primary);
+}
+
+.cal-modal-weekday-row {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 12px;
+}
+
+.cal-modal-weekday {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cal-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.cal-modal-day-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.cal-modal-day-cell.empty {
+  cursor: default;
+}
+
+.cal-modal-day-number {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.cal-modal-day-cell:not(.empty):hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.cal-modal-day-cell.today .cal-modal-day-number {
+  color: var(--orange-bright);
+}
+
+.cal-modal-today-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--orange-primary);
+  margin-top: 3px;
+}
+
+.cal-modal-day-cell.selected {
+  background: var(--orange-primary);
+  box-shadow: 0 4px 12px var(--orange-glow);
+}
+
+.cal-modal-day-cell.selected .cal-modal-day-number {
+  color: #fff;
+  font-weight: 600;
+}

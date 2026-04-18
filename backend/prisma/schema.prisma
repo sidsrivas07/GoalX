@@ -1,0 +1,74 @@
+// GoalX — Prisma Schema
+// Defines the database models for the productivity app.
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Enums not supported in SQLite, mapped to Strings
+
+// ── User ────────────────────────────────────────────────────
+
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  name        String?
+  password    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Preferences stored as flexible JSON
+  // e.g. { "sleepSchedule": "10PM-6AM", "focusHours": "9AM-12PM" }
+  preferences String?
+
+  // Relations
+  categories  Category[]
+
+  @@map("users")
+}
+
+// ── Category ────────────────────────────────────────────────
+
+model Category {
+  id          String   @id @default(uuid())
+  name        String
+  accentColor String   @default("#ff6b00")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks       Task[]
+
+  @@index([userId])
+  @@map("categories")
+}
+
+// ── Task ────────────────────────────────────────────────────
+
+model Task {
+  id            String     @id @default(uuid())
+  name          String
+  time          DateTime                         // Full ISO datetime for scheduling
+  duration      Int                              // Duration in minutes
+  status        String     @default("PENDING")
+  date          DateTime
+  isAiGenerated Boolean    @default(false)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  // Relations
+  categoryId    String
+  category      Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId])
+  @@index([date])
+  @@map("tasks")
+}
