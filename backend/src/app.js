@@ -17,7 +17,10 @@ const app = express();
 
 // ── Security & Parsing ──────────────────────────────────────
 app.use(helmet());                              // Security headers
-app.use(cors());                                // Cross-origin requests (frontend)
+app.use(cors({                                  // Cross-origin requests (frontend)
+  origin: '*',
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-gemini-key'],
+}));
 app.use(express.json({ limit: '16kb' }));       // Parse JSON bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
 
