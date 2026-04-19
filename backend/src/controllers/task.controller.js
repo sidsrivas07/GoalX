@@ -6,6 +6,7 @@ import asyncHandler from '../utils/asyncHandler.js';
 /**
  * GET /api/tasks?date=YYYY-MM-DD
  * Fetch all categories and their nested tasks for a specific date
+ * MERGES: Date-specific tasks AND Daily Recurring tasks
  */
 export const getTasksByDate = asyncHandler(async (req, res) => {
   const { date } = req.query;
@@ -14,14 +15,15 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Date query parameter is required (YYYY-MM-DD)');
   }
 
-  // Parse strings to create DateTime bounds for SQLite compatibility
   const targetDate = new Date(date);
   if (isNaN(targetDate.getTime())) {
     throw new ApiError(400, 'Invalid date format');
   }
 
-  const startOfDay = new Date(targetDate.setUTCHours(0, 0, 0, 0));
-  const endOfDay = new Date(targetDate.setUTCHours(23, 59, 59, 999));
+  const startOfDay = new Date(targetDate);
+  startOfDay.setUTCHours(0, 0, 0, 0);
+  const endOfDay = new Date(targetDate);
+  endOfDay.setUTCHours(23, 59, 59, 999);
 
   const categories = await prisma.category.findMany({
     where: { userId: req.user.id },
@@ -31,10 +33,17 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
       accentColor: true,
       tasks: {
         where: {
-          date: {
-            gte: startOfDay,
-            lte: endOfDay,
-          },
+          OR: [
+            {
+              date: {
+                gte: startOfDay,
+                lte: endOfDay,
+              },
+            },
+            {
+              recurrence: 'DAILY'
+            }
+          ]
         },
         orderBy: { time: 'asc' },
       },
@@ -42,23 +51,38 @@ export const getTasksByDate = asyncHandler(async (req, res) => {
     orderBy: { createdAt: 'asc' },
   });
 
+  // Post-process tasks to determine 'status' for DAILY tasks
+  // If task is DAILY and lastCompletedDate matches targetDate, it's COMPLETED for the view.
+  const categoriesWithStatus = categories.map(cat => ({
+    ...cat,
+    tasks: cat.tasks.map(task => {
+      if (task.recurrence === 'DAILY') {
+        const lastDate = task.lastCompletedDate ? new Date(task.lastCompletedDate).toISOString().split('T')[0] : null;
+        const viewDate = date; // YYYY-MM-DD
+        return {
+          ...task,
+          status: (lastDate === viewDate) ? 'COMPLETED' : 'PENDING'
+        };
+      }
+      return task;
+    })
+  }));
+
   res.status(200).json(
-    new ApiResponse(200, categories, 'Tasks for date retrieved successfully')
+    new ApiResponse(200, categoriesWithStatus, 'Tasks for date retrieved successfully')
   );
 });
 
 /**
  * POST /api/tasks
- * Create a new task in a specific category
  */
 export const createTask = asyncHandler(async (req, res) => {
-  const { name, time, duration, date, categoryId } = req.body;
+  const { name, time, duration, date, categoryId, recurrence, categoryType } = req.body;
 
   if (!name || !time || !duration || !date || !categoryId) {
     throw new ApiError(400, 'Please provide all required task fields');
   }
 
-  // Security: Verify category belongs to the logged-in user
   const category = await prisma.category.findFirst({
     where: { 
       id: categoryId,
@@ -67,11 +91,10 @@ export const createTask = asyncHandler(async (req, res) => {
   });
 
   if (!category) {
-    throw new ApiError(403, 'Category not found or does not belong to you');
+    throw new ApiError(403, 'Category not found or access denied');
   }
 
   const parsedDate = new Date(date);
-  // Optional: Set date time to 00:00:00 to purely represent the day component
   parsedDate.setUTCHours(12, 0, 0, 0); 
 
   const task = await prisma.task.create({
@@ -81,83 +104,22 @@ export const createTask = asyncHandler(async (req, res) => {
       duration: parseInt(duration),
       date: parsedDate,
       categoryId,
+      recurrence: recurrence || 'NONE',
+      categoryType: categoryType || 'MISC',
+      editable: true
     },
   });
 
-  res.status(201).json(
-    new ApiResponse(201, task, 'Task created successfully')
-  );
+  res.status(201).json(new ApiResponse(201, task, 'Task created successfully'));
 });
 
 /**
  * PATCH /api/tasks/:id/status
- * Toggle a task between PENDING and COMPLETED
+ * Handle status toggle with date-sensitivity for recurring tasks
  */
 export const toggleTaskStatus = asyncHandler(async (req, res) => {
   const { id } = req.params;
-
-  // Security check using relational filtering
-  const task = await prisma.task.findFirst({
-    where: {
-      id,
-      category: {
-        userId: req.user.id
-      }
-    }
-  });
-
-  if (!task) {
-    throw new ApiError(404, 'Task not found or access denied');
-  }
-
-  const newStatus = task.status === 'PENDING' ? 'COMPLETED' : 'PENDING';
-
-  const updatedTask = await prisma.task.update({
-    where: { id },
-    data: { status: newStatus },
-  });
-
-  res.status(200).json(
-    new ApiResponse(200, updatedTask, 'Task status updated')
-  );
-});
-
-/**
- * DELETE /api/tasks/:id
- * Delete a specific task belonging to the user
- */
-export const deleteTask = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-
-  const task = await prisma.task.findFirst({
-    where: {
-      id,
-      category: {
-        userId: req.user.id
-      }
-    }
-  });
-
-  if (!task) {
-    throw new ApiError(404, 'Task not found or access denied');
-  }
-
-  await prisma.task.delete({
-    where: { id },
-  });
-
-  res.status(200).json(
-    new ApiResponse(200, null, 'Task deleted successfully')
-  );
-});
-
-/**
- * PATCH /api/tasks/:id
- * Update a task's details (name, time, etc.)
- */
-export const updateTask = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  const { name, time, duration } = req.body;
+  const { date } = req.body; // The view date the user is toggling on
 
   const task = await prisma.task.findFirst({
     where: {
@@ -167,8 +129,57 @@ export const updateTask = asyncHandler(async (req, res) => {
   });
 
   if (!task) {
-    throw new ApiError(404, 'Task not found or access denied');
+    throw new ApiError(404, 'Task not found');
   }
+
+  if (task.recurrence === 'DAILY') {
+    if (!date) throw new ApiError(400, "Daily tasks require a date to toggle status");
+    
+    // Check if it's currently completed for this date
+    const lastDate = task.lastCompletedDate ? new Date(task.lastCompletedDate).toISOString().split('T')[0] : null;
+    const isCurrentlyDone = (lastDate === date);
+
+    const updatedTask = await prisma.task.update({
+      where: { id },
+      data: {
+        lastCompletedDate: isCurrentlyDone ? null : new Date(`${date}T12:00:00Z`)
+      }
+    });
+
+    return res.status(200).json(new ApiResponse(200, updatedTask, 'Daily task status toggled'));
+  }
+
+  // Normal task logic
+  const newStatus = task.status === 'PENDING' ? 'COMPLETED' : 'PENDING';
+  const updatedTask = await prisma.task.update({
+    where: { id },
+    data: { status: newStatus }
+  });
+
+  res.status(200).json(new ApiResponse(200, updatedTask, 'Task status updated'));
+});
+
+export const deleteTask = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const task = await prisma.task.findFirst({
+    where: { id, category: { userId: req.user.id } }
+  });
+
+  if (!task) throw new ApiError(404, 'Task not found');
+
+  await prisma.task.delete({ where: { id } });
+  res.status(200).json(new ApiResponse(200, null, 'Task deleted successfully'));
+});
+
+export const updateTask = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { name, time, duration } = req.body;
+
+  const task = await prisma.task.findFirst({
+    where: { id, category: { userId: req.user.id } }
+  });
+
+  if (!task) throw new ApiError(404, 'Task not found');
 
   const updatedTask = await prisma.task.update({
     where: { id },
@@ -179,7 +190,5 @@ export const updateTask = asyncHandler(async (req, res) => {
     },
   });
 
-  res.status(200).json(
-    new ApiResponse(200, updatedTask, 'Task updated successfully')
-  );
+  res.status(200).json(new ApiResponse(200, updatedTask, 'Task updated successfully'));
 });

@@ -42,9 +42,33 @@
 }
 
 .detail-header-text h2 {
-  font-size: 1.3rem;
+  font-size: 1.35rem;
   font-weight: 700;
   color: var(--text-primary);
+  margin: 0;
+}
+
+.detail-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 12px;
+}
+
+.detail-category-delete-btn {
+  padding: 8px;
+  border-radius: var(--radius-md);
+  color: var(--text-tertiary);
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-category-delete-btn:hover {
+  background: rgba(255, 69, 58, 0.1);
+  color: #ff453a;
 }
 
 .detail-task-count {
@@ -152,12 +176,29 @@
   min-width: 0;
 }
 
+.detail-task-name-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .detail-task-name {
-  font-size: 0.92rem;
+  font-size: 0.94rem;
   font-weight: 500;
   color: var(--text-primary);
   transition: all var(--transition-fast);
   cursor: pointer;
+}
+
+.daily-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 6px;
+  background: var(--orange-glow-subtle);
+  color: var(--orange-primary);
+  border: 1px solid var(--orange-border-low);
+  border-radius: 4px;
+  letter-spacing: 0.05em;
 }
 
 .detail-task-row.completed .detail-task-name {

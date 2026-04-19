@@ -34,14 +34,15 @@ function App() {
 
       const data = await api.get(`/tasks?date=${dateStr}`);
       
-      // Map backend 'status' to frontend 'completed' boolean
+      // Map backend fields to frontend UI expectations
       const mappedCategories = data.map(cat => ({
         ...cat,
         tasks: cat.tasks.map(t => ({
           ...t,
           completed: t.status === 'COMPLETED',
-          duration: `${t.duration} min`, // frontend UI expects string
-          time: new Date(t.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) // frontend friendly
+          duration: `${t.duration} min`,
+          // Ensure time is formatted correctly from DB ISO
+          time: t.time ? new Date(t.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : ''
         }))
       }));
       
@@ -78,6 +79,9 @@ function App() {
 
   // ── Task operations ──
   const toggleTask = useCallback(async (categoryId, taskId) => {
+    // Determine current view date for recurrence tracking
+    const dateStr = selectedDate.toISOString().split('T')[0];
+
     // Optimistic Update
     setCategories(prev => prev.map(cat => {
       if (cat.id !== categoryId) return cat;
@@ -90,13 +94,13 @@ function App() {
     }));
 
     try {
-      await api.patch(`/tasks/${taskId}/status`);
+      await api.patch(`/tasks/${taskId}/status`, { date: dateStr });
       fetchDashboardData(); // Resync
     } catch (error) {
       console.error('Failed to toggle task', error);
       fetchDashboardData(); // Rollback
     }
-  }, [fetchDashboardData]);
+  }, [selectedDate, fetchDashboardData]);
 
   const deleteTask = useCallback(async (categoryId, taskId) => {
     setCategories(prev => prev.map(cat => {
@@ -115,6 +119,24 @@ function App() {
       fetchDashboardData();
     }
   }, [fetchDashboardData]);
+
+  const deleteCategory = useCallback(async (categoryId) => {
+    // Confirm with user
+    if (!window.confirm("Are you sure you want to delete this entire category and all its tasks?")) {
+      return;
+    }
+
+    setCategories(prev => prev.filter(c => c.id !== categoryId));
+    navigate('/');
+
+    try {
+      await api.delete(`/categories/${categoryId}`);
+      fetchDashboardData();
+    } catch (error) {
+      console.error('Failed to delete category', error);
+      fetchDashboardData();
+    }
+  }, [navigate, fetchDashboardData]);
 
   const addTask = useCallback(async (categoryId, task) => {
     try {
@@ -196,6 +218,7 @@ function App() {
                 categories={categories}
                 onToggleTask={toggleTask}
                 onDeleteTask={deleteTask}
+                onDeleteCategory={deleteCategory}
                 onAddTask={addTask}
                 onUpdateTask={updateTask}
               />

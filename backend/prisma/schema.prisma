@@ -61,6 +61,13 @@ model Task {
   status        String     @default("PENDING")
   date          DateTime
   isAiGenerated Boolean    @default(false)
+  
+  // New fields for v1.06
+  categoryType  String     @default("MISC")     // DAILY | FESTIVAL | MISC
+  recurrence    String     @default("NONE")     // NONE | DAILY
+  editable      Boolean    @default(true)
+  lastCompletedDate DateTime?                   // Tracks when a DAILY task was last checked
+
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
 

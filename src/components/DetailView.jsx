@@ -4,10 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Check, Clock, Plus, Trash2 } from 'lucide-react';
 import './DetailView.css';
 
-export default function DetailView({ categories, onToggleTask, onDeleteTask, onAddTask }) {
+export default function DetailView({ categories, onToggleTask, onDeleteTask, onDeleteCategory, onAddTask, onUpdateTask }) {
   const { categoryId } = useParams();
   const navigate = useNavigate();
   const [newTaskName, setNewTaskName] = useState('');
+  const [showInput, setShowInput] = useState(false);
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editingName, setEditingName] = useState('');
 
@@ -66,7 +67,16 @@ export default function DetailView({ categories, onToggleTask, onDeleteTask, onA
           <ArrowLeft size={20} />
         </button>
         <div className="detail-header-text">
-          <h2>{category.name}</h2>
+          <div className="detail-title-row">
+            <h2>{category.name}</h2>
+            <button 
+              className="detail-category-delete-btn"
+              onClick={() => onDeleteCategory(category.id)}
+              aria-label="Delete Category"
+            >
+              <Trash2 size={18} />
+            </button>
+          </div>
           <span className="detail-task-count">
             {completedCount}/{category.tasks.length} completed
           </span>
@@ -121,9 +131,12 @@ export default function DetailView({ categories, onToggleTask, onDeleteTask, onA
                     autoFocus
                   />
                 ) : (
-                  <span className="detail-task-name" onClick={() => startEditing(task)}>
-                    {task.name}
-                  </span>
+                  <div className="detail-task-name-group">
+                    <span className="detail-task-name" onClick={() => startEditing(task)}>
+                      {task.name}
+                    </span>
+                    {task.recurrence === 'DAILY' && <span className="daily-badge">DAILY</span>}
+                  </div>
                 )}
                 {task.time && (
                   <span className="detail-task-time">

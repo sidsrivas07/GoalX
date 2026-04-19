@@ -2,17 +2,15 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { User } from 'lucide-react';
-import { ListTodo, Dumbbell, BookOpen, FolderKanban } from 'lucide-react';
-import Calendar from '../components/Calendar.jsx';
-import CalendarModal from '../components/CalendarModal.jsx';
-import CategoryCard from '../components/CategoryCard.jsx';
-import './HomePage.css';
+import { ListTodo, Dumbbell, BookOpen, FolderKanban, Sparkles, Gift } from 'lucide-react';
 
-const CATEGORY_CONFIG = {
-  'daily-tasks': { icon: ListTodo, color: '#ff6b00' },
-  'gym-workout': { icon: Dumbbell, color: '#ff8c00' },
-  'study-plan': { icon: BookOpen, color: '#ffaa33' },
-  'projects': { icon: FolderKanban, color: '#cc5500' },
+const CATEGORY_ICONS = {
+  'Daily Habits': { icon: ListTodo, color: '#ff6b00' },
+  'Festivals': { icon: Sparkles, color: '#e11d48' },
+  'Gym Workout': { icon: Dumbbell, color: '#ff8c00' },
+  'Study Plan': { icon: BookOpen, color: '#ffaa33' },
+  'General Tasks': { icon: FolderKanban, color: '#3B82F6' },
+  'Miscellaneous': { icon: FolderKanban, color: '#6366f1' },
 };
 
 export default function HomePage({ categories, selectedDate, onSelectDate, onCategoryClick }) {
@@ -92,7 +90,7 @@ export default function HomePage({ categories, selectedDate, onSelectDate, onCat
         <h2 className="section-title">My Categories</h2>
         <div className="categories-grid">
           {categories.map((category, index) => {
-            const config = CATEGORY_CONFIG[category.id] || { icon: ListTodo, color: '#ff6b00' };
+            const config = CATEGORY_ICONS[category.name] || { icon: ListTodo, color: category.accentColor || '#ff6b00' };
             const tasksDone = category.tasks.filter(t => t.completed).length;
             return (
               <CategoryCard

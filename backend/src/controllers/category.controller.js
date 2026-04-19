@@ -41,3 +41,29 @@ export const getCategories = asyncHandler(async (req, res) => {
     new ApiResponse(200, categories, 'Categories retrieved successfully')
   );
 });
+/**
+ * DELETE /api/categories/:id
+ * Delete a category and all its tasks (cascades via Prisma)
+ */
+export const deleteCategory = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const category = await prisma.category.findFirst({
+    where: {
+      id,
+      userId: req.user.id
+    }
+  });
+
+  if (!category) {
+    throw new ApiError(404, 'Category not found or access denied');
+  }
+
+  await prisma.category.delete({
+    where: { id }
+  });
+
+  res.status(200).json(
+    new ApiResponse(200, null, 'Category deleted successfully')
+  );
+});

@@ -14,37 +14,71 @@ export const generateSchedule = async (userPrompt, todayDateStr, apiKey = null) 
       }
     });
 
-    const prompt = `User Prompt: "${userPrompt}"\n\nThe current local date is: ${todayDateStr}. Provide the schedule accordingly. If a time is missing, assume reasonable defaults for the task.
-    You are an expert productivity assistant. Your job is to parse a user's natural language request into a list of specific, scheduled tasks.
+    const prompt = `You are an advanced AI scheduling assistant for a productivity app called GoalX.
 
-Rules:
-1. Always output exactly the requested JSON schema.
-2. The times must be strict HH:MM AM/PM strings (e.g., "6:00 AM", "2:30 PM").
-3. The date must be a string in YYYY-MM-DD format.
-4. The duration must be an integer representing minutes.
-5. Provide a single unified 'categoryName' that best fits the theme. Make it short (e.g., "Gym Workout", "Work", "Leisure").
+Your job is to convert a user's natural language request into a structured task schedule.
 
-JSON Schema:
-{
-  "categoryName": "string",
-  "tasks": [
-    {
-      "name": "string",
-      "time": "string (HH:MM AM/PM)",
-      "duration": "number (minutes)",
-      "date": "string (YYYY-MM-DD)"
-    }
-  ]
-}`;
+The user may describe:
+- Daily recurring habits (e.g., "gym everyday at 5pm for 2 hours")
+- One-time tasks (e.g., "study tomorrow at 7pm")
+- Festival-related tasks (e.g., "Diwali shopping at 4pm")
+
+You must analyze intent and classify tasks properly.
+
+----------------------
+
+STRICT RULES:
+
+1. Output ONLY valid JSON (no explanation, no text)
+2. Use 24-hour time format (HH:MM)
+3. If duration is not given, default to 60 minutes
+4. Do not create overlapping tasks
+5. Distribute tasks logically if multiple tasks exist
+6. Use YYYY-MM-DD for any date fields if needed, based on Today's Date: ${todayDateStr}
+
+----------------------
+
+TASK CLASSIFICATION RULES:
+
+- If task repeats daily → categoryType = "DAILY" and recurrence = "DAILY"
+- If task is related to festivals (Diwali, Holi, etc.) → categoryType = "FESTIVAL"
+- All other tasks → categoryType = "MISC"
+
+----------------------
+
+OUTPUT FORMAT (ALWAYS RETURN AN ARRAY):
+
+[
+  {
+    "name": "Task name",
+    "time": "HH:MM",
+    "duration": number,
+    "categoryType": "DAILY | FESTIVAL | MISC",
+    "recurrence": "NONE | DAILY",
+    "status": "PENDING",
+    "editable": true
+  }
+]
+
+----------------------
+
+USER INPUT:
+"${userPrompt}"
+
+----------------------
+
+Return only JSON.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const outputString = response.text();
     
-    // Handle potential markdown formatting if any
+    // Handle potential markdown formatting
     const cleanOutput = outputString.replace(/```json/g, '').replace(/```/g, '').trim();
-    const jsonOutput = JSON.parse(cleanOutput);
-    return jsonOutput;
+    const tasks = JSON.parse(cleanOutput);
+    
+    // Ensure we always return an array
+    return Array.isArray(tasks) ? tasks : [tasks];
 
   } catch (error) {
     console.error("Gemini (Legacy SDK) Error:", error);
