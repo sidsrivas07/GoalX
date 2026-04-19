@@ -1,16 +1,36 @@
-# React + Vite
+# 🎯 GoalX — AI-Powered Productivity
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+GoalX is a premium, AI-driven schedule and habit management application designed for focus and productivity. Built with React, Vite, and Capacitor for a seamless mobile-first experience.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Get the App (Version 1.01)
 
-## React Compiler
+Click the button below to download the latest Android APK. 
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+[![Download GoalX APK](https://img.shields.io/badge/Download-GoalX_v1.01_APK-FF6B00?style=for-the-badge&logo=android&logoColor=white)](https://github.com/sidsrivas07/GoalX/blob/main/GoalX_v1.01.apk?raw=true)
 
-## Expanding the ESLint configuration
+> [!TIP]
+> **To install**: Download the APK to your phone, open it, and select "Install". This version requires no login (Anonymous Access).
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## ✨ Features
+
+- **AI Scheduling**: Generate smart daily plans using the power of Google Gemini.
+- **Modern UI**: Dark mode with vibrant orange accents and smooth micro-animations.
+- **Glassmorphism**: High-end visual aesthetic for a premium experience.
+- **Mobile First**: Optimized specifically for Android devices.
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend**: React, Vite, Framer Motion, Lucide Icons
+- **Mobile**: Capacitor
+- **Backend**: Node.js, Express, Prisma, PostgreSQL (Neon)
+- **AI Engine**: Google Gemini SDK
+
+---
+
+*Built with ❤️ by Antigravity*
