@@ -1,12 +1,11 @@
 import { NavLink, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Home, BarChart3, Settings } from 'lucide-react';
+import { Home, BarChart3 } from 'lucide-react';
 import './BottomNav.css';
 
 const NAV_ITEMS = [
   { to: '/', icon: Home, label: 'Home' },
   { to: '/stats', icon: BarChart3, label: 'Stats' },
-  { to: '/settings', icon: Settings, label: 'Settings' },
 ];
 
 export default function BottomNav() {

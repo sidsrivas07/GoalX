@@ -1,21 +1,26 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { UserCircle, Bell, Shield, ChevronRight, LogOut, Save, ArrowLeft } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { UserCircle, Bell, Shield, ChevronRight, LogOut, Save, ArrowLeft, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
+  
   const [isEditing, setIsEditing] = useState(false);
   const [notifsOn, setNotifsOn] = useState(localStorage.getItem('APP_NOTIFS') !== 'false');
   
-  // Settings State (Persisted in localStorage)
+  // Personal Info (Synced with localStorage)
   const [name, setName] = useState(localStorage.getItem('USER_NAME') || 'User');
   const [email, setEmail] = useState(localStorage.getItem('USER_EMAIL') || 'user@goalx.app');
+  const [age, setAge] = useState(localStorage.getItem('USER_AGE') || '24');
+  const [country, setCountry] = useState(localStorage.getItem('USER_COUNTRY') || 'India');
 
   const handleSave = () => {
     localStorage.setItem('USER_NAME', name);
     localStorage.setItem('USER_EMAIL', email);
+    localStorage.setItem('USER_AGE', age);
+    localStorage.setItem('USER_COUNTRY', country);
     setIsEditing(false);
   };
 
@@ -25,18 +30,13 @@ export default function ProfilePage() {
     localStorage.setItem('APP_NOTIFS', newState);
   };
 
-  const menuItems = [
-    { icon: Bell, label: 'Notifications', value: notifsOn ? 'On' : 'Off', onClick: toggleNotifs },
-    { icon: Shield, label: 'Privacy', value: '', onClick: () => {} },
-  ];
-
   return (
     <motion.div
       className="profile-page"
-      initial={{ opacity: 0, x: 30 }}
+      initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -30 }}
-      transition={{ duration: 0.3 }}
+      exit={{ opacity: 0, x: -20 }}
+      transition={{ duration: 0.35, ease: 'easeOut' }}
     >
       <header className="profile-page-header">
         <button className="profile-back-btn" onClick={() => navigate(-1)}>
@@ -48,7 +48,7 @@ export default function ProfilePage() {
       {/* Profile Card */}
       <div className="profile-card glass-panel">
         <div className="profile-avatar-large">
-          <UserCircle size={48} strokeWidth={1.2} />
+          <UserCircle size={44} strokeWidth={1.5} />
         </div>
         <div className="profile-info">
           {isEditing ? (
@@ -63,7 +63,7 @@ export default function ProfilePage() {
                 className="profile-input-email" 
                 value={email} 
                 onChange={(e) => setEmail(e.target.value)} 
-                placeholder="Email"
+                placeholder="Email Address"
               />
             </div>
           ) : (
@@ -81,33 +81,74 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      {/* Menu */}
-      <div className="profile-menu">
-        {menuItems.map((item, index) => {
-          const Icon = item.icon;
-          return (
-          <motion.button
-            key={item.label}
-            className="profile-menu-item glass-panel"
-            onClick={item.onClick}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 + index * 0.06, duration: 0.3 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="menu-item-left">
-              <div className="menu-item-icon">
-                <Icon size={18} />
+      <div className="profile-menu-container">
+        
+        {/* Privacy & Info Section */}
+        <section className="profile-group-section">
+          <div className="group-label">Privacy & Info</div>
+          <div className="glass-panel group-panel">
+             <div className="group-item">
+                <span className="item-label">Age</span>
+                {isEditing ? (
+                  <input className="item-input" type="number" value={age} onChange={(e) => setAge(e.target.value)} />
+                ) : (
+                  <span className="item-value">{age} Years</span>
+                )}
+             </div>
+             <div className="group-divider" />
+             <div className="group-item">
+                <span className="item-label">Country</span>
+                {isEditing ? (
+                  <input className="item-input" value={country} onChange={(e) => setCountry(e.target.value)} />
+                ) : (
+                  <span className="item-value">{country}</span>
+                )}
+             </div>
+          </div>
+        </section>
+
+        {/* Settings & Toggles */}
+        <section className="profile-group-section">
+          <div className="group-label">Preferences</div>
+          
+          <button className="glass-panel menu-row" onClick={() => navigate('/settings')}>
+            <div className="menu-row-left">
+              <div className="menu-icon-bg"><Settings size={18} /></div>
+              <span>Settings</span>
+            </div>
+            <div className="menu-row-right">
+              <span className="text-muted text-xs">Theme, API Key</span>
+              <ChevronRight size={16} />
+            </div>
+          </button>
+
+          <div className="glass-panel menu-row" onClick={toggleNotifs} style={{ marginTop: '8px' }}>
+            <div className="menu-row-left">
+              <div className="menu-icon-bg"><Bell size={18} /></div>
+              <span>Notifications</span>
+            </div>
+            <div className="menu-row-right">
+              <div className={`sliding-toggle ${notifsOn ? 'on' : ''}`}>
+                 <motion.div 
+                    className="toggle-thumb" 
+                    layout 
+                    transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                  />
               </div>
-              <span className="menu-item-label">{item.label}</span>
             </div>
-            <div className="menu-item-right">
-              {item.value && <span className="menu-item-value">{item.value}</span>}
-              {item.label === 'Privacy' && <ChevronRight size={16} />}
+          </div>
+
+          <div className="glass-panel menu-row" style={{ marginTop: '8px' }}>
+            <div className="menu-row-left">
+              <div className="menu-icon-bg"><Shield size={18} /></div>
+              <span>Privacy</span>
             </div>
-          </motion.button>
-          );
-        })}
+            <div className="menu-row-right">
+              <ChevronRight size={16} />
+            </div>
+          </div>
+        </section>
+
       </div>
 
       {/* Logout */}
@@ -115,6 +156,10 @@ export default function ProfilePage() {
         <LogOut size={18} />
         Sign Out
       </button>
+
+      <div className="profile-version-footer">
+        Version 1.05 (Stable)
+      </div>
     </motion.div>
   );
 }
