@@ -1,28 +1,48 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserCircle, Bell, Shield, ChevronRight, Save, ArrowLeft, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { api } from '../api';
 import './ProfilePage.css';
 
 export default function ProfilePage() {
   const navigate = useNavigate();
+  const { user, setUser } = useAuth();
   
   const [isEditing, setIsEditing] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [notifsOn, setNotifsOn] = useState(localStorage.getItem('APP_NOTIFS') !== 'false');
   
-  // Personal Info (Synced with localStorage)
-  const [name, setName] = useState(localStorage.getItem('USER_NAME') || 'User');
-  const [email, setEmail] = useState(localStorage.getItem('USER_EMAIL') || 'user@goalx.app');
-  const [age, setAge] = useState(localStorage.getItem('USER_AGE') || '24');
-  const [country, setCountry] = useState(localStorage.getItem('USER_COUNTRY') || 'India');
+  // Local state for editing fields
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [age, setAge] = useState('');
+  const [country, setCountry] = useState('');
 
-  const handleSave = () => {
-    localStorage.setItem('USER_NAME', name);
-    localStorage.setItem('USER_EMAIL', email);
-    localStorage.setItem('USER_AGE', age);
-    localStorage.setItem('USER_COUNTRY', country);
-    setIsEditing(false);
+  // Sync state when user context loads
+  useEffect(() => {
+    if (user) {
+      setName(user.name || '');
+      setEmail(user.email || '');
+      setAge(user.age || '');
+      setCountry(user.country || '');
+    }
+  }, [user]);
+
+  const handleSave = async () => {
+    try {
+      const updated = await api.put('/auth/profile', {
+        name,
+        age: age ? parseInt(age) : null,
+        country
+      });
+      setUser(prev => ({ ...prev, ...updated }));
+      setIsEditing(false);
+    } catch (err) {
+      console.error('Failed to update profile', err);
+      alert('Save failed: ' + err.message);
+    }
   };
 
   const toggleNotifs = () => {
@@ -30,6 +50,8 @@ export default function ProfilePage() {
     setNotifsOn(newState);
     localStorage.setItem('APP_NOTIFS', newState);
   };
+
+  if (!user) return <div className="profile-page">Loading Profile...</div>;
 
   return (
     <motion.div
@@ -52,8 +74,8 @@ export default function ProfilePage() {
           <UserCircle size={44} strokeWidth={1.5} />
         </div>
         <div className="profile-info">
-          <h2 className="profile-name">{name}</h2>
-          <p className="profile-email">{email}</p>
+          <h2 className="profile-name">{user.name || 'User'}</h2>
+          <p className="profile-email">{user.email}</p>
         </div>
         <button 
           className={`profile-edit-btn ${isEditing ? 'active' : ''}`}
@@ -62,38 +84,6 @@ export default function ProfilePage() {
           {isEditing ? <Save size={16} /> : 'Edit'}
         </button>
       </div>
-
-      {/* Edit Fields (visible when editing) */}
-      {isEditing && (
-        <motion.div
-          className="glass-panel edit-fields-panel"
-          initial={{ opacity: 0, y: -8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={{ duration: 0.2 }}
-        >
-          <div className="edit-field-row">
-            <label className="edit-field-label">Display Name</label>
-            <input
-              className="edit-field-input"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your Name"
-            />
-          </div>
-          <div className="edit-field-divider" />
-          <div className="edit-field-row">
-            <label className="edit-field-label">Email</label>
-            <input
-              className="edit-field-input"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email Address"
-              type="email"
-            />
-          </div>
-        </motion.div>
-      )}
 
       <div className="profile-menu-container">
         
@@ -125,7 +115,7 @@ export default function ProfilePage() {
                     {isEditing ? (
                       <input className="item-input" value={name} onChange={(e) => setName(e.target.value)} />
                     ) : (
-                      <span className="item-value">{name}</span>
+                      <span className="item-value">{user.name || 'Set Name'}</span>
                     )}
                  </div>
                  <div className="group-divider" />
@@ -134,7 +124,7 @@ export default function ProfilePage() {
                     {isEditing ? (
                       <input className="item-input" type="number" value={age} onChange={(e) => setAge(e.target.value)} />
                     ) : (
-                      <span className="item-value">{age} Years</span>
+                      <span className="item-value">{user.age || '--'} Years</span>
                     )}
                  </div>
                  <div className="group-divider" />
@@ -143,7 +133,7 @@ export default function ProfilePage() {
                     {isEditing ? (
                       <input className="item-input" value={country} onChange={(e) => setCountry(e.target.value)} />
                     ) : (
-                      <span className="item-value">{country}</span>
+                      <span className="item-value">{user.country || 'Not Set'}</span>
                     )}
                  </div>
               </motion.div>
@@ -181,22 +171,12 @@ export default function ProfilePage() {
               </div>
             </div>
           </div>
-
-          <div className="glass-panel menu-row" style={{ marginTop: '8px' }}>
-            <div className="menu-row-left">
-              <div className="menu-icon-bg"><Shield size={18} /></div>
-              <span>Data & Usage</span>
-            </div>
-            <div className="menu-row-right">
-              <ChevronRight size={16} />
-            </div>
-          </div>
         </section>
 
       </div>
 
       <div className="profile-version-footer">
-        GoalX v1.05
+        GoalX v1.07
       </div>
     </motion.div>
   );

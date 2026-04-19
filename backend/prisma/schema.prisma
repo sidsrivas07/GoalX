@@ -19,6 +19,8 @@ model User {
   id          String   @id @default(uuid())
   email       String   @unique
   name        String?
+  age         Int?
+  country     String?
   password    String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -67,6 +69,8 @@ model Task {
   recurrence    String     @default("NONE")     // NONE | DAILY
   editable      Boolean    @default(true)
   lastCompletedDate DateTime?                   // Tracks when a DAILY task was last checked
+  currentStreak Int        @default(0)
+  longestStreak Int        @default(0)
 
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt

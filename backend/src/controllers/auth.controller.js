@@ -49,6 +49,8 @@ export const signup = asyncHandler(async (req, res) => {
         id: user.id,
         email: user.email,
         name: user.name,
+        age: user.age,
+        country: user.country
       },
       token,
     }, 'User registered successfully')
@@ -84,6 +86,8 @@ export const login = asyncHandler(async (req, res) => {
         id: user.id,
         email: user.email,
         name: user.name,
+        age: user.age,
+        country: user.country
       },
       token,
     }, 'Login successful')
@@ -102,6 +106,8 @@ export const getMe = asyncHandler(async (req, res) => {
       id: true,
       email: true,
       name: true,
+      age: true,
+      country: true,
       preferences: true,
       createdAt: true,
       updatedAt: true,
@@ -114,5 +120,32 @@ export const getMe = asyncHandler(async (req, res) => {
 
   res.status(200).json(
     new ApiResponse(200, user, 'User details retrieved')
+  );
+});
+/**
+ * PUT /api/auth/profile
+ * Update user's personal details
+ */
+export const updateProfile = asyncHandler(async (req, res) => {
+  const { name, age, country } = req.body;
+
+  const updatedUser = await prisma.user.update({
+    where: { id: req.user.id },
+    data: {
+      name: name !== undefined ? name : undefined,
+      age: age !== undefined ? parseInt(age) : undefined,
+      country: country !== undefined ? country : undefined,
+    },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      age: true,
+      country: true,
+    }
+  });
+
+  res.status(200).json(
+    new ApiResponse(200, updatedUser, 'Profile updated successfully')
   );
 });

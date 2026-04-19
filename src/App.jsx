@@ -228,7 +228,7 @@ function App() {
         </Routes>
       </AnimatePresence>
 
-      {!isDetailView && (
+      {location.pathname === '/' && (
         <FAB isOpen={isModalOpen} onClick={() => setIsModalOpen(!isModalOpen)} />
       )}
 

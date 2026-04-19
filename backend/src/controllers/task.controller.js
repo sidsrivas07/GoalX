@@ -138,11 +138,31 @@ export const toggleTaskStatus = asyncHandler(async (req, res) => {
     // Check if it's currently completed for this date
     const lastDate = task.lastCompletedDate ? new Date(task.lastCompletedDate).toISOString().split('T')[0] : null;
     const isCurrentlyDone = (lastDate === date);
+    const viewDate = new Date(date);
+
+    let nextStreak = task.currentStreak;
+    if (!isCurrentlyDone) {
+      // Logic for Incrementing Streak
+      const yesterday = new Date(viewDate);
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split('T')[0];
+
+      if (lastDate === yesterdayStr) {
+        nextStreak = (task.currentStreak || 0) + 1;
+      } else {
+        nextStreak = 1;
+      }
+    } else {
+      // Logic for Unchecking
+      nextStreak = Math.max(0, (task.currentStreak || 1) - 1);
+    }
 
     const updatedTask = await prisma.task.update({
       where: { id },
       data: {
-        lastCompletedDate: isCurrentlyDone ? null : new Date(`${date}T12:00:00Z`)
+        lastCompletedDate: isCurrentlyDone ? null : new Date(`${date}T12:00:00Z`),
+        currentStreak: nextStreak,
+        longestStreak: Math.max(task.longestStreak || 0, nextStreak)
       }
     });
 
