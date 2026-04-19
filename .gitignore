@@ -22,7 +22,6 @@ dist-ssr
 backend/dist
 
 # Capacitor / Mobile
-/android
 /ios
 *.apk
 *.aab
