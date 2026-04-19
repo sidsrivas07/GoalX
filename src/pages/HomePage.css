@@ -1,16 +1,19 @@
 .home-page {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 20px 16px;
-  padding-bottom: 100px;
+  gap: 28px;
+  padding: 24px 20px;
+  padding-bottom: 110px;
+  width: 100%;
 }
 
 /* ── Header ── */
 .home-header {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
 }
 
 .home-header-text {

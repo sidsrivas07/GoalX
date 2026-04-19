@@ -1,9 +1,10 @@
 .profile-page {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 20px 16px;
-  padding-bottom: 30px;
+  gap: 28px;
+  padding: 24px 20px;
+  padding-bottom: 110px;
+  width: 100%;
 }
 
 .profile-page-header {

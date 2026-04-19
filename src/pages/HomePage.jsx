@@ -28,8 +28,7 @@ export default function HomePage({ categories, selectedDate, onSelectDate, onCat
   else if (hour >= 16 && hour < 21) greeting = 'Good evening';
   else greeting = 'Good night';
 
-  const totalTasks = categories.reduce((sum, c) => sum + c.tasks.length, 0);
-  const completedTasks = categories.reduce((sum, c) => sum + c.tasks.filter(t => t.completed).length, 0);
+
 
   return (
     <motion.div
@@ -50,28 +49,7 @@ export default function HomePage({ categories, selectedDate, onSelectDate, onCat
         </div>
       </header>
 
-      {/* Stats Summary */}
-      <motion.div
-        className="home-stats"
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.4 }}
-      >
-        <div className="stat-item">
-          <span className="stat-number">{totalTasks}</span>
-          <span className="stat-label">Total</span>
-        </div>
-        <div className="stat-divider" />
-        <div className="stat-item">
-          <span className="stat-number orange">{completedTasks}</span>
-          <span className="stat-label">Done</span>
-        </div>
-        <div className="stat-divider" />
-        <div className="stat-item">
-          <span className="stat-number">{totalTasks - completedTasks}</span>
-          <span className="stat-label">Pending</span>
-        </div>
-      </motion.div>
+
 
       {/* Calendar */}
       <Calendar 

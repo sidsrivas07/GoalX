@@ -1,9 +1,10 @@
 .stats-page {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 20px 16px;
-  padding-bottom: 100px;
+  gap: 28px;
+  padding: 24px 20px;
+  padding-bottom: 110px;
+  width: 100%;
 }
 
 .stats-page-header {
