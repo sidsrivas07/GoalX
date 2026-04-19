@@ -44,16 +44,19 @@ export default function SettingsPage() {
           <h2>Appearance</h2>
         </div>
         <div className="theme-options">
-          {themeOptions.map(option => (
+          {themeOptions.map(option => {
+            const Icon = option.icon;
+            return (
             <button
               key={option.id}
               className={`theme-option glass-panel ${theme === option.id ? 'active' : ''}`}
               onClick={() => setTheme(option.id)}
             >
-              <option.icon size={20} className={theme === option.id ? 'orange' : ''} />
+              <Icon size={20} className={theme === option.id ? 'orange' : ''} />
               <span>{option.label}</span>
             </button>
-          ))}
+            );
+          })}
         </div>
       </section>
 

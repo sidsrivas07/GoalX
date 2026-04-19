@@ -83,7 +83,9 @@ export default function ProfilePage() {
 
       {/* Menu */}
       <div className="profile-menu">
-        {menuItems.map((item, index) => (
+        {menuItems.map((item, index) => {
+          const Icon = item.icon;
+          return (
           <motion.button
             key={item.label}
             className="profile-menu-item glass-panel"
@@ -95,7 +97,7 @@ export default function ProfilePage() {
           >
             <div className="menu-item-left">
               <div className="menu-item-icon">
-                <item.icon size={18} />
+                <Icon size={18} />
               </div>
               <span className="menu-item-label">{item.label}</span>
             </div>
@@ -104,7 +106,8 @@ export default function ProfilePage() {
               {item.label === 'Privacy' && <ChevronRight size={16} />}
             </div>
           </motion.button>
-        ))}
+          );
+        })}
       </div>
 
       {/* Logout */}
