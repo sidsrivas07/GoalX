@@ -4,13 +4,13 @@ GoalX is a premium, AI-driven schedule and habit management application designed
 
 ---
 
-## 🚀 Get the App (Version 1.07)
+## 🚀 Get the App (Version 1.08)
 
 Click the button below to download the latest Android APK.
 
 <p align="center">
-  <a href="https://github.com/sidsrivas07/GoalX/raw/main/GoalX_v1.0.7.apk">
-    <img src="https://img.shields.io/badge/DOWNLOAD-GOALX%20V1.07%20APK-ff6b00?style=for-the-badge&logo=android&logoColor=white&labelColor=555555" alt="Download APK" />
+  <a href="https://github.com/sidsrivas07/GoalX/raw/main/GoalX_v1.0.8.apk">
+    <img src="https://img.shields.io/badge/DOWNLOAD-GOALX%20V1.08%20APK-ff6b00?style=for-the-badge&logo=android&logoColor=white&labelColor=555555" alt="Download APK" />
   </a>
 </p>
 

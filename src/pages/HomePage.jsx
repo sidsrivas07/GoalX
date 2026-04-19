@@ -5,6 +5,7 @@ import { User } from 'lucide-react';
 import { ListTodo, Dumbbell, BookOpen, FolderKanban, Sparkles, Gift } from 'lucide-react';
 import Calendar from '../components/Calendar';
 import CalendarModal from '../components/CalendarModal';
+import CategoryCard from '../components/CategoryCard';
 
 const CATEGORY_ICONS = {
   'Daily Habits': { icon: ListTodo, color: '#ff6b00' },
