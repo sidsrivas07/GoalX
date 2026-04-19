@@ -1,7 +1,8 @@
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 import './CategoryCard.css';
 
-export default function CategoryCard({ icon: Icon, title, subtitle, taskCount, onClick, index = 0, accentColor }) {
+const CategoryCard = memo(function CategoryCard({ icon: Icon, title, subtitle, taskCount, onClick, index = 0, accentColor }) {
   return (
     <motion.button
       className="category-card glass-panel"
@@ -25,4 +26,6 @@ export default function CategoryCard({ icon: Icon, title, subtitle, taskCount, o
       <div className="cat-accent-strip" style={accentColor ? { background: `linear-gradient(180deg, ${accentColor}, ${accentColor}88)` } : undefined} />
     </motion.button>
   );
-}
+});
+
+export default CategoryCard;

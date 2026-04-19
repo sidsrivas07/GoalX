@@ -157,11 +157,24 @@
   font-weight: 500;
   color: var(--text-primary);
   transition: all var(--transition-fast);
+  cursor: pointer;
 }
 
 .detail-task-row.completed .detail-task-name {
   text-decoration: line-through;
   color: var(--text-tertiary);
+}
+
+.detail-task-edit-input {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--orange-primary);
+  color: var(--text-primary);
+  font-size: 0.92rem;
+  font-weight: 500;
+  width: 100%;
+  padding: 0 0 2px 0;
+  outline: none;
 }
 
 .detail-task-time {

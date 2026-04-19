@@ -73,6 +73,99 @@
   background: var(--orange-glow-subtle);
 }
 
+.profile-edit-btn.active {
+  background: var(--orange-primary);
+  color: #fff;
+  border-color: var(--orange-primary);
+}
+
+.profile-edit-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profile-input-name {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  width: 100%;
+}
+
+.profile-input-email {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  width: 100%;
+}
+
+/* ── Settings Panel ── */
+.settings-panel {
+  padding: 20px;
+  border-radius: var(--radius-xl);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-color: var(--orange-border);
+  overflow: hidden;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.settings-header h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.settings-desc {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.api-key-wrap {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.api-key-input {
+  flex: 1;
+  background: var(--bg-input);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.api-key-save {
+  padding: 0 16px;
+  border-radius: var(--radius-md);
+  background: var(--orange-primary);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+/* ── Menu Utilities ── */
+.profile-menu-item.active {
+  border-color: var(--orange-border-glow);
+  background: var(--orange-glow-subtle);
+}
+
+.rotate-down {
+  transform: rotate(90deg);
+  transition: transform 0.3s ease;
+}
+
+.orange {
+  color: var(--orange-primary);
+}
+
 /* ── Menu ── */
 .profile-menu {
   display: flex;

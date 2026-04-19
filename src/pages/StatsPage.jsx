@@ -1,15 +1,31 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { BarChart3, TrendingUp, Target, Flame } from 'lucide-react';
+import { api } from '../api';
 import './StatsPage.css';
 
 export default function StatsPage({ categories }) {
+  const [streak, setStreak] = useState(0);
+
+  useEffect(() => {
+    const fetchStreak = async () => {
+      try {
+        const data = await api.get('/stats/streak');
+        setStreak(data.streak || 0);
+      } catch (err) {
+        console.error('Failed to fetch streak', err);
+      }
+    };
+    fetchStreak();
+  }, [categories]);
+
   const totalTasks = categories.reduce((sum, c) => sum + c.tasks.length, 0);
   const completedTasks = categories.reduce((sum, c) => sum + c.tasks.filter(t => t.completed).length, 0);
   const overallPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   const stats = [
     { icon: Target, label: 'Completion Rate', value: `${overallPercent}%`, color: '#ff6b00' },
-    { icon: Flame, label: 'Current Streak', value: '7 days', color: '#ff8c00' },
+    { icon: Flame, label: 'Current Streak', value: `${streak} days`, color: '#ff8c00' },
     { icon: TrendingUp, label: 'Tasks This Week', value: `${completedTasks}`, color: '#ffaa33' },
   ];
 

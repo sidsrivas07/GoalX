@@ -11,11 +11,12 @@ export const generatePlan = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Prompt is required");
   }
 
-  // 1. Get today's local date to provide context to the LLM
+  // 1. Get today's local date and potential user-provided API key from the header
   const todayDateStr = new Date().toISOString().split('T')[0];
-
+  const userApiKey = req.headers['x-gemini-key'];
+  
   // 2. Query Gemini
-  const aiResult = await generateSchedule(prompt, todayDateStr);
+  const aiResult = await generateSchedule(prompt, todayDateStr, userApiKey);
 
   const { categoryName, tasks } = aiResult;
 

@@ -4,61 +4,18 @@ import { api } from '../api';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('goalx_token') || null);
-  const [isLoading, setIsLoading] = useState(true);
+  // Authentication Removed: Providing a persistent anonymous user context
+  const [user, setUser] = useState({ 
+    id: '00000000-0000-0000-0000-000000000000', 
+    name: 'Anonymous',
+    email: 'anonymous@goalx.app'
+  });
+  const [token, setToken] = useState('anonymous-token');
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Rejuvenate the user object on mount if a token exists
-  useEffect(() => {
-    const fetchMe = async () => {
-      if (!token) {
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const userData = await api.get('/auth/me');
-        setUser(userData);
-      } catch (error) {
-        console.error('Invalid token, logging out', error);
-        logout();
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchMe();
-  }, [token]);
-
-  const login = async (email, password) => {
-    try {
-      const data = await api.post('/auth/login', { email, password });
-      handleAuthSuccess(data);
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const signup = async (name, email, password) => {
-    try {
-      const data = await api.post('/auth/signup', { name, email, password });
-      handleAuthSuccess(data);
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  const handleAuthSuccess = (data) => {
-    localStorage.setItem('goalx_token', data.token);
-    setToken(data.token);
-    setUser(data.user);
-  };
-
-  const logout = () => {
-    localStorage.removeItem('goalx_token');
-    setToken(null);
-    setUser(null);
-  };
+  const login = async () => {};
+  const signup = async () => {};
+  const logout = () => {};
 
   return (
     <AuthContext.Provider value={{ user, token, login, signup, logout, isLoading }}>

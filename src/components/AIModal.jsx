@@ -51,10 +51,10 @@ export default function AIModal({ isOpen, onClose, onPlanGenerated }) {
           />
           <motion.div
             className="ai-modal"
-            initial={{ opacity: 0, y: 80, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 80, scale: 0.95 }}
-            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ opacity: 0, y: "100%" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: "100%" }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
           >
             <div className="ai-modal-header">
               <div className="ai-modal-icon">

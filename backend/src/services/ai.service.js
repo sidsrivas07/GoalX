@@ -1,11 +1,12 @@
 import { GoogleGenAI, Type } from '@google/genai';
 
-// Initialize the client. Under the hood, it automatically picks up process.env.GEMINI_API_KEY
-const ai = new GoogleGenAI({});
-
-export const generateSchedule = async (userPrompt, todayDateStr) => {
+export const generateSchedule = async (userPrompt, todayDateStr, apiKey = null) => {
   try {
-    const response = await ai.models.generateContent({
+    // If a custom key is provided, we initialize a fresh client with that key.
+    // Otherwise, it falls back to the system's process.env.GEMINI_API_KEY.
+    const client = apiKey ? new GoogleGenAI(apiKey) : new GoogleGenAI({});
+    
+    const response = await client.models.generateContent({
       model: 'gemini-3.1-flash',
       contents: `User Prompt: "${userPrompt}"\n\nThe current local date is: ${todayDateStr}. Provide the schedule accordingly. If a time is missing, assume reasonable defaults for the task.`,
       config: {

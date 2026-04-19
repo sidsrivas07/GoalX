@@ -127,6 +127,16 @@ function App() {
     }
   }, [selectedDate, fetchDashboardData]);
 
+  const updateTask = useCallback(async (categoryId, taskId, updates) => {
+    try {
+      await api.patch(`/tasks/${taskId}`, updates);
+      fetchDashboardData();
+    } catch (error) {
+      console.error('Failed to update task', error);
+      fetchDashboardData();
+    }
+  }, [fetchDashboardData]);
+
   // ── UI Handlers ──
   const handleCategoryClick = useCallback((categoryId) => {
     navigate(`/category/${categoryId}`);
@@ -134,11 +144,6 @@ function App() {
 
   if (isLoading) {
     return <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ff6b00' }}>Loading GoalX...</div>;
-  }
-
-  // Authentication barrier
-  if (!user) {
-    return <AuthPage />;
   }
 
   const isDetailView = location.pathname.startsWith('/category/');
@@ -168,6 +173,7 @@ function App() {
                 onToggleTask={toggleTask}
                 onDeleteTask={deleteTask}
                 onAddTask={addTask}
+                onUpdateTask={updateTask}
               />
             }
           />

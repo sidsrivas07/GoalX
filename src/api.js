@@ -12,16 +12,13 @@ const API_URL = import.meta.env.VITE_API_URL || 'https://goalx-backend.onrender.
  * Executes a fetch request with automatic authorization handling.
  */
 export const apiFetch = async (endpoint, options = {}) => {
-  const token = localStorage.getItem('goalx_token');
+  const userApiKey = localStorage.getItem('GEMINI_API_KEY');
   
   const headers = {
     'Content-Type': 'application/json',
+    ...(userApiKey ? { 'x-gemini-key': userApiKey } : {}),
     ...options.headers,
   };
-
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
 
   const response = await fetch(`${API_URL}${endpoint}`, {
     ...options,

@@ -10,6 +10,7 @@ import authRoutes from './auth.routes.js';
 import categoryRoutes from './category.routes.js';
 import taskRoutes from './task.routes.js';
 import plannerRoutes from './planner.routes.js';
+import statsRoutes from './stats.routes.js';
 
 const router = Router();
 
@@ -19,5 +20,6 @@ router.use('/auth', authRoutes);
 router.use('/categories', categoryRoutes);
 router.use('/tasks', taskRoutes);
 router.use('/planner', plannerRoutes);
+router.use('/stats', statsRoutes);
 
 export default router;

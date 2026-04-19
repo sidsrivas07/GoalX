@@ -10,15 +10,16 @@
 .ai-modal {
   position: fixed;
   bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 430px;
+  left: 16px;
+  right: 16px;
+  margin: 0 auto;
+  width: auto;
+  max-width: 400px;
   background: var(--bg-surface-solid);
   border: 1px solid var(--orange-border);
   border-bottom: none;
   border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
-  padding: 28px 24px 32px;
+  padding: 28px 24px calc(32px + env(safe-area-inset-bottom));
   z-index: 210;
   box-shadow:
     0 -8px 40px rgba(0, 0, 0, 0.5),

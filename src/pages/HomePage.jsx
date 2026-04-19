@@ -17,7 +17,13 @@ const CATEGORY_CONFIG = {
 export default function HomePage({ categories, selectedDate, onSelectDate, onCategoryClick }) {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const today = new Date();
-  const greeting = today.getHours() < 12 ? 'Good morning' : today.getHours() < 18 ? 'Good afternoon' : 'Good evening';
+  const hour = today.getHours();
+  let greeting = 'Hello';
+  
+  if (hour >= 5 && hour < 12) greeting = 'Good morning';
+  else if (hour >= 12 && hour < 16) greeting = 'Good afternoon';
+  else if (hour >= 16 && hour < 21) greeting = 'Good evening';
+  else greeting = 'Good night';
 
   const totalTasks = categories.reduce((sum, c) => sum + c.tasks.length, 0);
   const completedTasks = categories.reduce((sum, c) => sum + c.tasks.filter(t => t.completed).length, 0);

@@ -8,7 +8,8 @@ export default function DetailView({ categories, onToggleTask, onDeleteTask, onA
   const { categoryId } = useParams();
   const navigate = useNavigate();
   const [newTaskName, setNewTaskName] = useState('');
-  const [showInput, setShowInput] = useState(false);
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editingName, setEditingName] = useState('');
 
   const category = categories.find(c => c.id === categoryId);
 
@@ -34,9 +35,21 @@ export default function DetailView({ categories, onToggleTask, onDeleteTask, onA
   const handleAddTask = (e) => {
     e.preventDefault();
     if (!newTaskName.trim()) return;
-    onAddTask(categoryId, { name: newTaskName.trim() });
+    onAddTask(categoryId, { name: newTaskName.trim(), time: '09:00 AM', duration: 30 });
     setNewTaskName('');
     setShowInput(false);
+  };
+
+  const startEditing = (task) => {
+    setEditingTaskId(task.id);
+    setEditingName(task.name);
+  };
+
+  const handleUpdateName = (taskId) => {
+    if (editingName.trim()) {
+      onUpdateTask(categoryId, taskId, { name: editingName.trim() });
+    }
+    setEditingTaskId(null);
   };
 
   return (
@@ -98,7 +111,20 @@ export default function DetailView({ categories, onToggleTask, onDeleteTask, onA
               </button>
 
               <div className="detail-task-info">
-                <span className="detail-task-name">{task.name}</span>
+                {editingTaskId === task.id ? (
+                  <input
+                    className="detail-task-edit-input"
+                    value={editingName}
+                    onChange={(e) => setEditingName(e.target.value)}
+                    onBlur={() => handleUpdateName(task.id)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleUpdateName(task.id)}
+                    autoFocus
+                  />
+                ) : (
+                  <span className="detail-task-name" onClick={() => startEditing(task)}>
+                    {task.name}
+                  </span>
+                )}
                 {task.time && (
                   <span className="detail-task-time">
                     <Clock size={12} />

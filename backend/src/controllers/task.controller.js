@@ -150,3 +150,36 @@ export const deleteTask = asyncHandler(async (req, res) => {
     new ApiResponse(200, null, 'Task deleted successfully')
   );
 });
+
+/**
+ * PATCH /api/tasks/:id
+ * Update a task's details (name, time, etc.)
+ */
+export const updateTask = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { name, time, duration } = req.body;
+
+  const task = await prisma.task.findFirst({
+    where: {
+      id,
+      category: { userId: req.user.id }
+    }
+  });
+
+  if (!task) {
+    throw new ApiError(404, 'Task not found or access denied');
+  }
+
+  const updatedTask = await prisma.task.update({
+    where: { id },
+    data: {
+      name: name !== undefined ? name : task.name,
+      time: time !== undefined ? new Date(time) : task.time,
+      duration: duration !== undefined ? parseInt(duration) : task.duration,
+    },
+  });
+
+  res.status(200).json(
+    new ApiResponse(200, updatedTask, 'Task updated successfully')
+  );
+});
