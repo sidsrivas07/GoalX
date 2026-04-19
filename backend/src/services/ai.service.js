@@ -40,9 +40,8 @@ STRICT RULES:
 
 TASK CLASSIFICATION RULES:
 
-- If task repeats daily → categoryType = "DAILY" and recurrence = "DAILY"
-- If task is related to festivals (Diwali, Holi, etc.) → categoryType = "FESTIVAL"
-- All other tasks → categoryType = "MISC"
+- Determine a short, descriptive "category" for each task (e.g., "Gym Workout", "Academics", "Meetings", "Habits", "Festivals"). Group similar tasks into the same category.
+- If task repeats daily → set recurrence = "DAILY". Otherwise set "NONE".
 
 ----------------------
 
@@ -53,7 +52,7 @@ OUTPUT FORMAT (ALWAYS RETURN AN ARRAY):
     "name": "Task name",
     "time": "HH:MM",
     "duration": number,
-    "categoryType": "DAILY | FESTIVAL | MISC",
+    "category": "Descriptive category name",
     "recurrence": "NONE | DAILY",
     "status": "PENDING",
     "editable": true

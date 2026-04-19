@@ -23,24 +23,19 @@ export const generatePlan = asyncHandler(async (req, res) => {
     return res.status(200).json(new ApiResponse(200, [], "AI returned no tasks for this request."));
   }
 
-  // 3. Process each task and resolve its category
-  // We'll map the AI categories to user-friendly names
-  const categoryMap = {
-    'DAILY': 'Daily Habits',
-    'FESTIVAL': 'Festivals',
-    'MISC': 'General Tasks'
-  };
-
   const createdTasks = [];
 
   for (const t of tasks) {
-    const categoryName = categoryMap[t.categoryType] || 'Miscellaneous';
+    const categoryName = t.category || 'Miscellaneous';
     
     // Find or create category
     let category = await prisma.category.findFirst({
       where: {
         userId: req.user.id,
-        name: categoryName
+        name: {
+          equals: categoryName,
+          mode: 'insensitive' // Be forgiving with casing
+        }
       }
     });
 
@@ -49,13 +44,15 @@ export const generatePlan = asyncHandler(async (req, res) => {
         data: {
           name: categoryName,
           userId: req.user.id,
-          accentColor: t.categoryType === 'DAILY' ? '#ff6b00' : (t.categoryType === 'FESTIVAL' ? '#e11d48' : '#3B82F6')
+          accentColor: '#3B82F6' // Default Blue
         }
       });
     }
 
     // Parse 24h time "HH:MM"
-    const [hours, mins] = t.time.split(':').map(n => parseInt(n));
+    const [hours, mins] = t.time.includes(':') 
+      ? t.time.split(':').map(n => parseInt(n))
+      : [9, 0];
     
     // For specific date, use today or the AI-specified date
     // Note: If recurrence is DAILY, the date field is less critical for the master record
