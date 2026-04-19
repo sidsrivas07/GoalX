@@ -1,42 +1,47 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { UserCircle, Settings, Bell, Shield, Moon, ChevronRight, LogOut, Save, Key } from 'lucide-react';
+import { useState } from 'react';
+import { motion } from 'framer-motion';
+import { UserCircle, Bell, Shield, ChevronRight, LogOut, Save, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
 
 export default function ProfilePage() {
+  const navigate = useNavigate();
   const [isEditing, setIsEditing] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
+  const [notifsOn, setNotifsOn] = useState(localStorage.getItem('APP_NOTIFS') !== 'false');
   
   // Settings State (Persisted in localStorage)
   const [name, setName] = useState(localStorage.getItem('USER_NAME') || 'User');
   const [email, setEmail] = useState(localStorage.getItem('USER_EMAIL') || 'user@goalx.app');
-  const [apiKey, setApiKey] = useState(localStorage.getItem('GEMINI_API_KEY') || '');
 
   const handleSave = () => {
     localStorage.setItem('USER_NAME', name);
     localStorage.setItem('USER_EMAIL', email);
-    localStorage.setItem('GEMINI_API_KEY', apiKey);
     setIsEditing(false);
-    setShowSettings(false);
+  };
+
+  const toggleNotifs = () => {
+    const newState = !notifsOn;
+    setNotifsOn(newState);
+    localStorage.setItem('APP_NOTIFS', newState);
   };
 
   const menuItems = [
-    { icon: Bell, label: 'Notifications', value: 'On', onClick: () => {} },
-    { icon: Moon, label: 'Dark Mode', value: 'Always', onClick: () => {} },
+    { icon: Bell, label: 'Notifications', value: notifsOn ? 'On' : 'Off', onClick: toggleNotifs },
     { icon: Shield, label: 'Privacy', value: '', onClick: () => {} },
-    { icon: Settings, label: 'Settings', value: showSettings ? 'Hide' : 'Configure', onClick: () => setShowSettings(!showSettings) },
   ];
 
   return (
     <motion.div
       className="profile-page"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+      initial={{ opacity: 0, x: 30 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -30 }}
       transition={{ duration: 0.3 }}
     >
       <header className="profile-page-header">
-        <UserCircle size={22} className="profile-page-icon" />
+        <button className="profile-back-btn" onClick={() => navigate(-1)}>
+          <ArrowLeft size={20} />
+        </button>
         <h1>Profile</h1>
       </header>
 
@@ -76,39 +81,12 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      <AnimatePresence>
-        {showSettings && (
-          <motion.div 
-            className="settings-panel glass-panel"
-            initial={{ height: 0, opacity: 0, marginBottom: 0 }}
-            animate={{ height: 'auto', opacity: 1, marginBottom: 16 }}
-            exit={{ height: 0, opacity: 0, marginBottom: 0 }}
-          >
-            <div className="settings-header">
-              <Key size={16} className="orange" />
-              <h3>API Configuration</h3>
-            </div>
-            <p className="settings-desc">Enter your Google Gemini API Key to use your own quota.</p>
-            <div className="api-key-wrap">
-              <input 
-                type="password"
-                className="api-key-input"
-                placeholder="Paste Gemini API Key here..."
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-              />
-              <button className="api-key-save" onClick={handleSave}>Apply</button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Menu */}
       <div className="profile-menu">
         {menuItems.map((item, index) => (
           <motion.button
             key={item.label}
-            className={`profile-menu-item glass-panel ${item.label === 'Settings' && showSettings ? 'active' : ''}`}
+            className="profile-menu-item glass-panel"
             onClick={item.onClick}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
@@ -123,7 +101,7 @@ export default function ProfilePage() {
             </div>
             <div className="menu-item-right">
               {item.value && <span className="menu-item-value">{item.value}</span>}
-              <ChevronRight size={16} className={item.label === 'Settings' && showSettings ? 'rotate-down' : ''} />
+              {item.label === 'Privacy' && <ChevronRight size={16} />}
             </div>
           </motion.button>
         ))}

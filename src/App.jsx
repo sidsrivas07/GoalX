@@ -8,9 +8,11 @@ import DetailView from './components/DetailView';
 import HomePage from './pages/HomePage';
 import StatsPage from './pages/StatsPage';
 import ProfilePage from './pages/ProfilePage';
+import SettingsPage from './pages/SettingsPage';
 import AuthPage from './pages/AuthPage';
 import { useAuth } from './context/AuthContext';
 import { api } from './api';
+import { App as CapacitorApp } from '@capacitor/app';
 import './App.css';
 
 function App() {
@@ -52,6 +54,27 @@ function App() {
   useEffect(() => {
     fetchDashboardData();
   }, [fetchDashboardData]);
+
+  // ── Capacitor Hardware Back Button ──
+  useEffect(() => {
+    let listener = null;
+    
+    const handleBackButton = () => {
+      if (location.pathname !== '/') {
+        navigate(-1);
+      } else {
+        CapacitorApp.exitApp();
+      }
+    };
+
+    CapacitorApp.addListener('backButton', handleBackButton).then(l => {
+      listener = l;
+    });
+
+    return () => {
+      if (listener) listener.remove();
+    };
+  }, [location.pathname, navigate]);
 
   // ── Task operations ──
   const toggleTask = useCallback(async (categoryId, taskId) => {
@@ -165,6 +188,7 @@ function App() {
           />
           <Route path="/stats" element={<StatsPage categories={categories} />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route
             path="/category/:categoryId"
             element={

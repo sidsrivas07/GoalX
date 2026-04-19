@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { User } from 'lucide-react';
 import { ListTodo, Dumbbell, BookOpen, FolderKanban } from 'lucide-react';
 import Calendar from '../components/Calendar.jsx';
@@ -15,6 +16,7 @@ const CATEGORY_CONFIG = {
 };
 
 export default function HomePage({ categories, selectedDate, onSelectDate, onCategoryClick }) {
+  const navigate = useNavigate();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const today = new Date();
   const hour = today.getHours();
@@ -42,7 +44,7 @@ export default function HomePage({ categories, selectedDate, onSelectDate, onCat
           <p className="home-greeting">{greeting}</p>
           <h1 className="home-title">Dashboard</h1>
         </div>
-        <div className="home-avatar">
+        <div className="home-avatar" onClick={() => navigate('/profile')} style={{ cursor: 'pointer' }}>
           <User size={20} />
         </div>
       </header>

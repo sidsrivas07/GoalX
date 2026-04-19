@@ -4,7 +4,7 @@ export const generateSchedule = async (userPrompt, todayDateStr, apiKey = null) 
   try {
     // If a custom key is provided, we initialize a fresh client with that key.
     // Otherwise, it falls back to the system's process.env.GEMINI_API_KEY.
-    const client = apiKey ? new GoogleGenAI(apiKey) : new GoogleGenAI({});
+    const client = apiKey ? new GoogleGenAI({ apiKey }) : new GoogleGenAI({});
     
     const response = await client.models.generateContent({
       model: 'gemini-3.1-flash',

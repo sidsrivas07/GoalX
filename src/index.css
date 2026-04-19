@@ -57,6 +57,27 @@
   --shadow-glow: 0 0 20px var(--orange-glow-soft), 0 0 60px var(--orange-glow-subtle);
 }
 
+:root.light-theme {
+  --bg-deep: #f2f2f7;
+  --bg-surface: rgba(255, 255, 255, 0.75);
+  --bg-surface-solid: #ffffff;
+  --bg-panel: rgba(255, 255, 255, 0.65);
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --bg-input: rgba(235, 235, 240, 0.8);
+  
+  --text-primary: #1c1c1e;
+  --text-secondary: #6e6e73;
+  --text-tertiary: #aeaeb2;
+  
+  --glass-border: rgba(0, 0, 0, 0.06);
+  --glass-border-hover: rgba(0, 0, 0, 0.12);
+  --glass-highlight: rgba(255, 255, 255, 0.6);
+  
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 20px rgba(255, 107, 0, 0.15), 0 0 60px rgba(255, 107, 0, 0.08);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
