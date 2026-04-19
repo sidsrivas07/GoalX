@@ -8,6 +8,7 @@ import DetailView from './components/DetailView';
 import HomePage from './pages/HomePage';
 import StatsPage from './pages/StatsPage';
 import ProfilePage from './pages/ProfilePage';
+import SettingsPage from './pages/SettingsPage';
 import AuthPage from './pages/AuthPage';
 import { useAuth } from './context/AuthContext';
 import { api } from './api';
@@ -187,6 +188,7 @@ function App() {
           />
           <Route path="/stats" element={<StatsPage categories={categories} />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route
             path="/category/:categoryId"
             element={

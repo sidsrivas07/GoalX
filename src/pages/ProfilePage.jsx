@@ -8,6 +8,7 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   
   const [isEditing, setIsEditing] = useState(false);
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
   const [notifsOn, setNotifsOn] = useState(localStorage.getItem('APP_NOTIFS') !== 'false');
   
   // Personal Info (Synced with localStorage)
@@ -83,28 +84,58 @@ export default function ProfilePage() {
 
       <div className="profile-menu-container">
         
-        {/* Privacy & Info Section */}
+        {/* Privacy & Info Toggle Section */}
         <section className="profile-group-section">
-          <div className="group-label">Privacy & Info</div>
-          <div className="glass-panel group-panel">
-             <div className="group-item">
-                <span className="item-label">Age</span>
-                {isEditing ? (
-                  <input className="item-input" type="number" value={age} onChange={(e) => setAge(e.target.value)} />
-                ) : (
-                  <span className="item-value">{age} Years</span>
-                )}
-             </div>
-             <div className="group-divider" />
-             <div className="group-item">
-                <span className="item-label">Country</span>
-                {isEditing ? (
-                  <input className="item-input" value={country} onChange={(e) => setCountry(e.target.value)} />
-                ) : (
-                  <span className="item-value">{country}</span>
-                )}
-             </div>
+          <div className="group-label">Security & Access</div>
+          
+          <div className="glass-panel menu-row" onClick={() => setIsPrivacyOpen(!isPrivacyOpen)}>
+            <div className="menu-row-left">
+              <div className="menu-icon-bg"><Shield size={18} /></div>
+              <span>Privacy & Identity</span>
+            </div>
+            <div className="menu-row-right">
+              <ChevronRight size={16} style={{ transform: isPrivacyOpen ? 'rotate(90deg)' : 'none', transition: 'transform 0.3s' }} />
+            </div>
           </div>
+
+          <AnimatePresence>
+            {isPrivacyOpen && (
+              <motion.div 
+                className="glass-panel group-panel"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                style={{ overflow: 'hidden', marginTop: '4px' }}
+              >
+                 <div className="group-item">
+                    <span className="item-label">Full Name</span>
+                    {isEditing ? (
+                      <input className="item-input" value={name} onChange={(e) => setName(e.target.value)} />
+                    ) : (
+                      <span className="item-value">{name}</span>
+                    )}
+                 </div>
+                 <div className="group-divider" />
+                 <div className="group-item">
+                    <span className="item-label">Age</span>
+                    {isEditing ? (
+                      <input className="item-input" type="number" value={age} onChange={(e) => setAge(e.target.value)} />
+                    ) : (
+                      <span className="item-value">{age} Years</span>
+                    )}
+                 </div>
+                 <div className="group-divider" />
+                 <div className="group-item">
+                    <span className="item-label">Country</span>
+                    {isEditing ? (
+                      <input className="item-input" value={country} onChange={(e) => setCountry(e.target.value)} />
+                    ) : (
+                      <span className="item-value">{country}</span>
+                    )}
+                 </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </section>
 
         {/* Settings & Toggles */}
@@ -141,7 +172,7 @@ export default function ProfilePage() {
           <div className="glass-panel menu-row" style={{ marginTop: '8px' }}>
             <div className="menu-row-left">
               <div className="menu-icon-bg"><Shield size={18} /></div>
-              <span>Privacy</span>
+              <span>Data & Usage</span>
             </div>
             <div className="menu-row-right">
               <ChevronRight size={16} />

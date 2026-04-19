@@ -7,7 +7,7 @@ export const generateSchedule = async (userPrompt, todayDateStr, apiKey = null) 
     const client = apiKey ? new GoogleGenAI({ apiKey }) : new GoogleGenAI({});
     
     const response = await client.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-1.5-flash',
       contents: `User Prompt: "${userPrompt}"\n\nThe current local date is: ${todayDateStr}. Provide the schedule accordingly. If a time is missing, assume reasonable defaults for the task.`,
       config: {
         systemInstruction: `You are an expert productivity assistant. Your job is to parse a user's natural language request into a list of specific, scheduled tasks.
