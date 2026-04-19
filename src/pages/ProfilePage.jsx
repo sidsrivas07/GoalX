@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserCircle, Bell, Shield, ChevronRight, LogOut, Save, ArrowLeft, Settings } from 'lucide-react';
+import { UserCircle, Bell, Shield, ChevronRight, Save, ArrowLeft, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import './ProfilePage.css';
 
@@ -52,27 +52,8 @@ export default function ProfilePage() {
           <UserCircle size={44} strokeWidth={1.5} />
         </div>
         <div className="profile-info">
-          {isEditing ? (
-            <div className="profile-edit-fields">
-              <input 
-                className="profile-input-name" 
-                value={name} 
-                onChange={(e) => setName(e.target.value)} 
-                placeholder="Your Name"
-              />
-              <input 
-                className="profile-input-email" 
-                value={email} 
-                onChange={(e) => setEmail(e.target.value)} 
-                placeholder="Email Address"
-              />
-            </div>
-          ) : (
-            <>
-              <h2 className="profile-name">{name}</h2>
-              <p className="profile-email">{email}</p>
-            </>
-          )}
+          <h2 className="profile-name">{name}</h2>
+          <p className="profile-email">{email}</p>
         </div>
         <button 
           className={`profile-edit-btn ${isEditing ? 'active' : ''}`}
@@ -81,6 +62,38 @@ export default function ProfilePage() {
           {isEditing ? <Save size={16} /> : 'Edit'}
         </button>
       </div>
+
+      {/* Edit Fields (visible when editing) */}
+      {isEditing && (
+        <motion.div
+          className="glass-panel edit-fields-panel"
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.2 }}
+        >
+          <div className="edit-field-row">
+            <label className="edit-field-label">Display Name</label>
+            <input
+              className="edit-field-input"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Your Name"
+            />
+          </div>
+          <div className="edit-field-divider" />
+          <div className="edit-field-row">
+            <label className="edit-field-label">Email</label>
+            <input
+              className="edit-field-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email Address"
+              type="email"
+            />
+          </div>
+        </motion.div>
+      )}
 
       <div className="profile-menu-container">
         
@@ -182,14 +195,8 @@ export default function ProfilePage() {
 
       </div>
 
-      {/* Logout */}
-      <button className="profile-logout-btn">
-        <LogOut size={18} />
-        Sign Out
-      </button>
-
       <div className="profile-version-footer">
-        Version 1.05 (Stable)
+        GoalX v1.05
       </div>
     </motion.div>
   );

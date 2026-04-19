@@ -97,12 +97,47 @@
   gap: 4px;
 }
 
-.profile-input-name, .profile-input-email {
+/* ── Edit Fields Panel ── */
+.edit-fields-panel {
+  padding: 4px 16px;
+  border-radius: var(--radius-xl);
+}
+
+.edit-field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  gap: 16px;
+}
+
+.edit-field-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+  width: 100px;
+}
+
+.edit-field-input {
+  flex: 1;
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--orange-border);
   padding: 4px 0;
   color: var(--text-primary);
+  font-size: 0.9rem;
+  text-align: right;
+  outline: none;
+}
+
+.edit-field-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.edit-field-divider {
+  height: 1px;
+  background: var(--glass-border);
+  opacity: 0.4;
 }
 
 /* ── Menu Containers ── */
