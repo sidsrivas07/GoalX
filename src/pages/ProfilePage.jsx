@@ -219,7 +219,7 @@ export default function ProfilePage() {
       </div>
 
       <div className="profile-version-footer">
-        GoalX v1.07
+        GoalX v1.0.9
       </div>
     </motion.div>
   );
