@@ -133,6 +133,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
     where: { id: req.user.id },
     data: {
       name: name !== undefined ? name : undefined,
+      email: email !== undefined ? email : undefined,
       age: age !== undefined ? parseInt(age) : undefined,
       country: country !== undefined ? country : undefined,
     },

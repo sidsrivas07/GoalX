@@ -26,12 +26,18 @@ export default function StatsPage({ categories }) {
   const completedTasks = categories.reduce((sum, c) => sum + c.tasks.filter(t => t.completed).length, 0);
   const overallPercent = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-  // Flatten all daily tasks for streaks
-  const dailyTasks = categories.flatMap(c => c.tasks.filter(t => t.recurrence === 'DAILY'));
+  // Calculate Best Streak across all categories and tasks
+  const allTasks = categories.flatMap(c => c.tasks);
+  const bestStreak = allTasks.reduce((max, t) => Math.max(max, t.longestStreak || 0), 0);
+
+  // Group all unique tasks for the streaks list (deduplicated by name)
+  const uniqueTasksForStreaks = Array.from(
+    new Map(allTasks.map(t => [t.name, t])).values()
+  );
 
   const stats = [
     { icon: Target, label: 'Completion', value: `${overallPercent}%`, color: '#ff6b00' },
-    { icon: Flame, label: 'Best Streak', value: `${overallStreak} d`, color: '#ff8c00' },
+    { icon: Flame, label: 'Best Streak', value: `${bestStreak} d`, color: '#ff8c00' },
     { icon: TrendingUp, label: 'Tasks Done', value: `${completedTasks}`, color: '#ffaa33' },
   ];
 
@@ -149,9 +155,9 @@ export default function StatsPage({ categories }) {
             className="streaks-tab-content"
           >
             <section className="streaks-list">
-              <h2 className="section-title">Habit Streaks</h2>
-              {dailyTasks.length > 0 ? (
-                dailyTasks.map((task) => (
+              <h2 className="section-title">Independent Streaks</h2>
+              {uniqueTasksForStreaks.length > 0 ? (
+                uniqueTasksForStreaks.map((task) => (
                   <div key={task.id} className="streak-item glass-panel">
                     <div className="streak-item-left">
                       <div className="streak-icon-bg">
@@ -170,7 +176,7 @@ export default function StatsPage({ categories }) {
                 ))
               ) : (
                 <div className="empty-state">
-                  <p>No daily habits scheduled for today.</p>
+                  <p>No tasks found to track streaks.</p>
                 </div>
               )}
             </section>

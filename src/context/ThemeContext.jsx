@@ -3,23 +3,12 @@ import { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(localStorage.getItem('APP_THEME') || 'system');
+  const [theme, setTheme] = useState('dark');
 
   useEffect(() => {
-    localStorage.setItem('APP_THEME', theme);
-    
-    let isDark = true;
-    if (theme === 'system') {
-      isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    } else {
-      isDark = theme === 'dark';
-    }
-
-    if (isDark) {
-      document.documentElement.classList.remove('light-theme');
-    } else {
-      document.documentElement.classList.add('light-theme');
-    }
+    // Strictly enforce Dark Mode globally
+    document.documentElement.classList.remove('light-theme');
+    localStorage.setItem('APP_THEME', 'dark');
   }, [theme]);
 
   // Listen to system theme changes dynamically if set to 'system'

@@ -15,7 +15,7 @@ Click the button below to download the latest Android APK.
 </p>
 
 > [!TIP]
-> **To install**: Download the APK to your phone, open it, and select "Install". Version 1.07 introduces **Habit Streaks**, independent task tracking, and specialized **Profile Identity** management.
+> **To install**: Download the APK to your phone, open it, and select "Install". Version 1.0.9 introduces **Habit Streaks**, independent task tracking, and specialized **Profile Identity** management.
 
 ---
 

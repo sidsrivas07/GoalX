@@ -187,9 +187,7 @@ function App() {
     navigate(`/category/${categoryId}`);
   }, [navigate]);
 
-  if (isLoading) {
-    return <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ff6b00' }}>Loading GoalX...</div>;
-  }
+
 
   const isDetailView = location.pathname.startsWith('/category/');
 

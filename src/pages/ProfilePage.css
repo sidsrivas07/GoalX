@@ -62,6 +62,9 @@
 
 .profile-info {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
 .profile-name {
@@ -73,29 +76,29 @@
 .profile-email {
   font-size: 0.8rem;
   color: var(--text-secondary);
-  margin-top: 2px;
 }
 
-.profile-edit-btn {
-  padding: 6px 14px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--orange-border);
-  color: var(--orange-primary);
-  font-size: 0.78rem;
-  font-weight: 600;
-  transition: all var(--transition-fast);
-}
-
-.profile-edit-btn.active {
-  background: var(--orange-primary);
-  color: #fff;
-  border-color: var(--orange-primary);
-}
-
-.profile-edit-fields {
+/* Edit Mode for Profile Card */
+.profile-info-edit {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
+}
+
+.profile-info-edit input {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  outline: none;
+  width: 100%;
+}
+
+.profile-info-edit input:focus {
+  border-color: var(--orange-primary);
 }
 
 /* ── Edit Fields Panel ── */
@@ -164,39 +167,63 @@
 }
 
 .group-panel {
-  padding: 0 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.group-item {
+/* ── Premium Floating Labels ── */
+.floating-label-group {
+  position: relative;
+  width: 100%;
+}
+
+.floating-label-group label {
+  position: absolute;
+  left: 12px;
+  top: 14px;
+  font-size: 0.9rem;
+  color: var(--text-tertiary);
+  pointer-events: none;
+  transition: all 0.2s ease;
+  background: transparent;
+  padding: 0 4px;
+}
+
+.floating-label-group input {
+  width: 100%;
+  padding: 14px 12px;
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.floating-label-group input:focus {
+  border-color: var(--orange-primary);
+  background: rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 0 2px var(--orange-glow-soft);
+}
+
+.floating-label-group input:focus + label,
+.floating-label-group input:not(:placeholder-shown) + label {
+  top: -8px;
+  left: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--orange-primary);
+  background: var(--bg-surface-solid);
+}
+
+.group-item-static {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 0;
-}
-
-.item-label {
-  font-size: 0.88rem;
-  color: var(--text-primary);
-}
-
-.item-value {
-  font-size: 0.88rem;
-  color: var(--text-secondary);
-}
-
-.item-input {
-  background: transparent;
-  border: none;
-  text-align: right;
-  color: var(--orange-primary);
-  font-weight: 500;
-  max-width: 120px;
-}
-
-.group-divider {
-  height: 1px;
-  background: var(--glass-border);
-  opacity: 0.5;
+  padding: 4px 0;
 }
 
 /* ── Menu Row (Link items) ── */

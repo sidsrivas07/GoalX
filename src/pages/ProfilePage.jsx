@@ -34,6 +34,7 @@ export default function ProfilePage() {
     try {
       const updated = await api.put('/auth/profile', {
         name,
+        email,
         age: age ? parseInt(age) : null,
         country
       });
@@ -73,10 +74,27 @@ export default function ProfilePage() {
         <div className="profile-avatar-large">
           <UserCircle size={44} strokeWidth={1.5} />
         </div>
-        <div className="profile-info">
-          <h2 className="profile-name">{user.name || 'User'}</h2>
-          <p className="profile-email">{user.email}</p>
-        </div>
+        
+        {isEditing ? (
+          <div className="profile-info-edit">
+            <input 
+              placeholder="Full Name" 
+              value={name} 
+              onChange={(e) => setName(e.target.value)} 
+            />
+            <input 
+              placeholder="Email" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+            />
+          </div>
+        ) : (
+          <div className="profile-info">
+            <h2 className="profile-name">{user.name || 'Anonymous User'}</h2>
+            <p className="profile-email">{user.email || 'anonymous@goalx.app'}</p>
+          </div>
+        )}
+
         <button 
           className={`profile-edit-btn ${isEditing ? 'active' : ''}`}
           onClick={() => isEditing ? handleSave() : setIsEditing(true)}
@@ -110,32 +128,57 @@ export default function ProfilePage() {
                 exit={{ height: 0, opacity: 0 }}
                 style={{ overflow: 'hidden', marginTop: '4px' }}
               >
-                 <div className="group-item">
-                    <span className="item-label">Full Name</span>
-                    {isEditing ? (
-                      <input className="item-input" value={name} onChange={(e) => setName(e.target.value)} />
-                    ) : (
-                      <span className="item-value">{user.name || 'Set Name'}</span>
-                    )}
-                 </div>
-                 <div className="group-divider" />
-                 <div className="group-item">
-                    <span className="item-label">Age</span>
-                    {isEditing ? (
-                      <input className="item-input" type="number" value={age} onChange={(e) => setAge(e.target.value)} />
-                    ) : (
-                      <span className="item-value">{user.age || '--'} Years</span>
-                    )}
-                 </div>
-                 <div className="group-divider" />
-                 <div className="group-item">
-                    <span className="item-label">Country</span>
-                    {isEditing ? (
-                      <input className="item-input" value={country} onChange={(e) => setCountry(e.target.value)} />
-                    ) : (
-                      <span className="item-value">{user.country || 'Not Set'}</span>
-                    )}
-                 </div>
+                 {isEditing ? (
+                   <>
+                     <div className="floating-label-group">
+                       <input 
+                        id="name"
+                        placeholder=" " 
+                        value={name} 
+                        onChange={(e) => setName(e.target.value)} 
+                       />
+                       <label htmlFor="name">Full Name</label>
+                     </div>
+                     
+                     <div className="floating-label-group">
+                       <input 
+                        id="age"
+                        type="number"
+                        placeholder=" " 
+                        value={age} 
+                        onChange={(e) => setAge(e.target.value)} 
+                       />
+                       <label htmlFor="age">Age</label>
+                     </div>
+
+                     <div className="floating-label-group">
+                       <input 
+                        id="country"
+                        placeholder=" " 
+                        value={country} 
+                        onChange={(e) => setCountry(e.target.value)} 
+                       />
+                       <label htmlFor="country">Country</label>
+                     </div>
+                   </>
+                 ) : (
+                   <>
+                    <div className="group-item-static">
+                        <span className="item-label text-muted text-xs">Full Name</span>
+                        <span className="item-value">{user.name || 'Set Name'}</span>
+                    </div>
+                    <div className="group-divider" />
+                    <div className="group-item-static" style={{ padding: '12px 0' }}>
+                        <span className="item-label text-muted text-xs">Age</span>
+                        <span className="item-value">{user.age || '--'} Years</span>
+                    </div>
+                    <div className="group-divider" />
+                    <div className="group-item-static">
+                        <span className="item-label text-muted text-xs">Country</span>
+                        <span className="item-value">{user.country || 'Not Set'}</span>
+                    </div>
+                   </>
+                 )}
               </motion.div>
             )}
           </AnimatePresence>

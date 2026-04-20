@@ -1,7 +1,7 @@
 .stats-page {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 32px;
   padding: 24px 20px;
   padding-bottom: 110px;
   width: 100%;
@@ -28,7 +28,7 @@
   padding: 4px;
   gap: 4px;
   border-radius: var(--radius-xl);
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .stats-tab {
@@ -52,10 +52,11 @@
 /* ── Ring Section ── */
 .stats-ring-section {
   border-radius: var(--radius-2xl);
-  padding: 28px;
+  padding: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 12px;
 }
 
 .stats-ring-container {
@@ -106,7 +107,8 @@
 .stats-cards {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
+  margin-bottom: 12px;
 }
 
 .stat-card {
@@ -148,7 +150,8 @@
 .stats-breakdown {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
+  margin-top: 12px;
 }
 
 .breakdown-row {

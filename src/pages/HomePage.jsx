@@ -39,15 +39,29 @@ export default function HomePage({ categories, selectedDate, onSelectDate, onCat
       transition={{ duration: 0.3 }}
     >
       {/* Header */}
-      <header className="home-header">
-        <div className="home-header-text">
-          <p className="home-greeting">{greeting}</p>
-          <h1 className="home-title">Dashboard</h1>
+      <div 
+        className="home-header"
+        style={{ 
+          display: 'flex', 
+          flexDirection: 'row', 
+          justifyContent: 'space-between', 
+          alignItems: 'flex-start',
+          width: '100%',
+          marginBottom: '16px'
+        }}
+      >
+        <div className="home-header-left" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <h1 className="home-title" style={{ margin: 0 }}>Dashboard</h1>
+          <p className="home-greeting" style={{ margin: 0 }}>{greeting}</p>
         </div>
-        <div className="home-avatar" onClick={() => navigate('/profile')} style={{ cursor: 'pointer' }}>
-          <User size={20} />
+        <div 
+          className="home-avatar-container" 
+          onClick={() => navigate('/profile')}
+          style={{ cursor: 'pointer', flexShrink: 0, marginTop: '4px' }}
+        >
+          <User size={28} />
         </div>
-      </header>
+      </div>
 
 
 
@@ -68,7 +82,7 @@ export default function HomePage({ categories, selectedDate, onSelectDate, onCat
 
       {/* Categories */}
       <section className="home-categories">
-        <h2 className="section-title">My Categories</h2>
+        <h2 className="section-title large">My Categories</h2>
         <div className="categories-grid">
           {categories.map((category, index) => {
             const config = CATEGORY_ICONS[category.name] || { icon: ListTodo, color: category.accentColor || '#ff6b00' };
