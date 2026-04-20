@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserCircle, Bell, Shield, ChevronRight, Save, ArrowLeft, Settings } from 'lucide-react';
+import { UserCircle, Bell, Shield, ChevronRight, Save, ArrowLeft, Settings, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../api';
@@ -12,7 +12,9 @@ export default function ProfilePage() {
   
   const [isEditing, setIsEditing] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  const [isPrivacyEditing, setIsPrivacyEditing] = useState(false);
   const [notifsOn, setNotifsOn] = useState(localStorage.getItem('APP_NOTIFS') !== 'false');
+  const [saveStatus, setSaveStatus] = useState(null); // 'saving' | 'saved' | 'error' | null
   
   // Local state for editing fields
   const [name, setName] = useState('');
@@ -31,6 +33,7 @@ export default function ProfilePage() {
   }, [user]);
 
   const handleSave = async () => {
+    setSaveStatus('saving');
     try {
       const updated = await api.put('/auth/profile', {
         name,
@@ -40,9 +43,13 @@ export default function ProfilePage() {
       });
       setUser(prev => ({ ...prev, ...updated }));
       setIsEditing(false);
+      setIsPrivacyEditing(false);
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus(null), 2000);
     } catch (err) {
       console.error('Failed to update profile', err);
-      alert('Save failed: ' + err.message);
+      setSaveStatus('error');
+      setTimeout(() => setSaveStatus(null), 3000);
     }
   };
 
@@ -90,7 +97,7 @@ export default function ProfilePage() {
           </div>
         ) : (
           <div className="profile-info">
-            <h2 className="profile-name">{user.name || 'Anonymous User'}</h2>
+            <h2 className="profile-name">{user.name || 'Anonymous'}</h2>
             <p className="profile-email">{user.email || 'anonymous@goalx.app'}</p>
           </div>
         )}
@@ -102,6 +109,22 @@ export default function ProfilePage() {
           {isEditing ? <Save size={16} /> : 'Edit'}
         </button>
       </div>
+
+      {/* Save Status Toast */}
+      <AnimatePresence>
+        {saveStatus && (
+          <motion.div 
+            className={`save-toast ${saveStatus}`}
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+          >
+            {saveStatus === 'saving' && 'Saving...'}
+            {saveStatus === 'saved' && '✓ Profile saved'}
+            {saveStatus === 'error' && '✗ Save failed, try again'}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="profile-menu-container">
         
@@ -128,7 +151,7 @@ export default function ProfilePage() {
                 exit={{ height: 0, opacity: 0 }}
                 style={{ overflow: 'hidden', marginTop: '4px' }}
               >
-                 {isEditing ? (
+                 {isPrivacyEditing ? (
                    <>
                      <div className="floating-label-group">
                        <input 
@@ -160,12 +183,28 @@ export default function ProfilePage() {
                        />
                        <label htmlFor="country">Country</label>
                      </div>
+
+                     <div className="privacy-btn-group">
+                       <button className="privacy-save-btn" onClick={handleSave}>
+                         <Check size={16} />
+                         <span>Save Changes</span>
+                       </button>
+                       <button className="privacy-cancel-btn" onClick={() => {
+                         setIsPrivacyEditing(false);
+                         // Reset to current user values
+                         setName(user.name || '');
+                         setAge(user.age || '');
+                         setCountry(user.country || '');
+                       }}>
+                         Cancel
+                       </button>
+                     </div>
                    </>
                  ) : (
                    <>
                     <div className="group-item-static">
                         <span className="item-label text-muted text-xs">Full Name</span>
-                        <span className="item-value">{user.name || 'Set Name'}</span>
+                        <span className="item-value">{user.name || 'Not Set'}</span>
                     </div>
                     <div className="group-divider" />
                     <div className="group-item-static" style={{ padding: '12px 0' }}>
@@ -177,6 +216,13 @@ export default function ProfilePage() {
                         <span className="item-label text-muted text-xs">Country</span>
                         <span className="item-value">{user.country || 'Not Set'}</span>
                     </div>
+                    <div className="group-divider" />
+                    <button 
+                      className="privacy-edit-btn"
+                      onClick={(e) => { e.stopPropagation(); setIsPrivacyEditing(true); }}
+                    >
+                      Edit Details
+                    </button>
                    </>
                  )}
               </motion.div>
@@ -224,3 +270,4 @@ export default function ProfilePage() {
     </motion.div>
   );
 }
+

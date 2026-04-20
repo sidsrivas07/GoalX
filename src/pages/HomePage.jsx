@@ -81,26 +81,34 @@ export default function HomePage({ categories, selectedDate, onSelectDate, onCat
       />
 
       {/* Categories */}
-      <section className="home-categories">
+      <section className="home-categories-container glass-panel">
         <h2 className="section-title large">My Categories</h2>
-        <div className="categories-grid">
-          {categories.map((category, index) => {
-            const config = CATEGORY_ICONS[category.name] || { icon: ListTodo, color: category.accentColor || '#ff6b00' };
-            const tasksDone = category.tasks.filter(t => t.completed).length;
-            return (
-              <CategoryCard
-                key={category.id}
-                icon={config.icon}
-                title={category.name}
-                subtitle={`${tasksDone}/${category.tasks.length} completed`}
-                taskCount={category.tasks.length}
-                accentColor={config.color}
-                onClick={() => onCategoryClick(category.id)}
-                index={index}
-              />
-            );
-          })}
-        </div>
+        {categories.length > 0 ? (
+          <div className="categories-grid">
+            {categories.map((category, index) => {
+              const config = CATEGORY_ICONS[category.name] || { icon: ListTodo, color: category.accentColor || '#ff6b00' };
+              const tasksDone = category.tasks.filter(t => t.completed).length;
+              return (
+                <CategoryCard
+                  key={category.id}
+                  icon={config.icon}
+                  title={category.name}
+                  subtitle={`${tasksDone}/${category.tasks.length} completed`}
+                  taskCount={category.tasks.length}
+                  accentColor={config.color}
+                  onClick={() => onCategoryClick(category.id)}
+                  index={index}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <div className="categories-empty-state">
+            <Sparkles size={28} style={{ color: 'var(--orange-primary)', marginBottom: '8px' }} />
+            <p>No categories yet</p>
+            <span>Tap the + button to generate your first AI schedule</span>
+          </div>
+        )}
       </section>
     </motion.div>
   );

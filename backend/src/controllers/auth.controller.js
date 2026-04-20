@@ -127,7 +127,7 @@ export const getMe = asyncHandler(async (req, res) => {
  * Update user's personal details
  */
 export const updateProfile = asyncHandler(async (req, res) => {
-  const { name, age, country } = req.body;
+  const { name, email, age, country } = req.body;
 
   const updatedUser = await prisma.user.update({
     where: { id: req.user.id },

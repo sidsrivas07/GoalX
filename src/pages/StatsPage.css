@@ -5,6 +5,11 @@
   padding: 24px 20px;
   padding-bottom: 110px;
   width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .stats-page-header {

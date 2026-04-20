@@ -1,8 +1,22 @@
 .app-shell {
   width: 100%;
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   position: relative;
+  overflow: hidden;
+}
+
+/* All routed page content scrolls inside this area */
+.app-shell > div:first-child,
+.app-shell > .home-page,
+.app-shell > .stats-page,
+.app-shell > .profile-page,
+.app-shell > .settings-page {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }

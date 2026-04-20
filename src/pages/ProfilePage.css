@@ -5,6 +5,11 @@
   padding: 24px 20px;
   padding-bottom: 110px;
   width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .profile-page-header {
@@ -319,3 +324,118 @@
   color: var(--text-tertiary);
   margin-top: 10px;
 }
+
+/* ── Save Toast ── */
+.save-toast {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.save-toast.saving {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-secondary);
+  border: 1px solid var(--glass-border);
+}
+
+.save-toast.saved {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.save-toast.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* ── Privacy Edit/Save Buttons ── */
+.privacy-edit-btn {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid var(--orange-border);
+  border-radius: var(--radius-md);
+  background: var(--orange-glow-subtle);
+  color: var(--orange-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+}
+
+.privacy-edit-btn:hover {
+  background: rgba(255, 107, 0, 0.15);
+  border-color: var(--orange-border-glow);
+}
+
+.privacy-btn-group {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.privacy-save-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px;
+  border-radius: var(--radius-md);
+  background: var(--orange-primary);
+  color: #000;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.privacy-save-btn:hover {
+  background: var(--orange-bright);
+  box-shadow: 0 4px 16px var(--orange-glow);
+}
+
+.privacy-cancel-btn {
+  padding: 11px 18px;
+  border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid var(--glass-border);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.privacy-cancel-btn:hover {
+  border-color: var(--glass-border-hover);
+  color: var(--text-primary);
+}
+
+/* ── Edit Button Active State ── */
+.profile-edit-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  flex-shrink: 0;
+}
+
+.profile-edit-btn.active {
+  background: var(--orange-primary);
+  color: #000;
+  border-color: var(--orange-primary);
+}
+
