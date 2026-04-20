@@ -265,7 +265,7 @@ export default function ProfilePage() {
       </div>
 
       <div className="profile-version-footer">
-        GoalX v1.0.9
+        GoalX v1.10.0
       </div>
     </motion.div>
   );
