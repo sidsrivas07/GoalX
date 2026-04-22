@@ -13,6 +13,7 @@ Click the button below to download the latest Android APK.
     <img src="https://img.shields.io/badge/DOWNLOAD-GOALX%20V1.10.0%20APK-ff6b00?style=for-the-badge&logo=android&logoColor=white&labelColor=555555" alt="Download APK" />
   </a>
 </p>
+Direct download link: [GoalX_v1.10.0.apk](https://github.com/sidsrivas07/GoalX/raw/main/GoalX_v1.10.0.apk)
 
 > [!TIP]
 > **To install**: Download the APK to your phone, open it, and select "Install". Version 1.10.0 includes AI pipeline fixes, streak calculation fixes, and improved theme behavior.
