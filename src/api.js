@@ -6,8 +6,7 @@
 // 172.16.85.99 is the specific local IP address of your Windows computer.
 // This allows the Android APK to access your local backend over Wi-Fi.
 // Update this URL with your actual Render deployment link once the backend is live!
-const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const API_URL = import.meta.env.VITE_API_URL || (isLocal ? 'http://localhost:5000/api' : 'https://goalx-backend.onrender.com/api');
+const API_URL = import.meta.env.VITE_API_URL || 'https://goalx-backend.onrender.com/api';
 
 /**
  * Executes a fetch request with automatic authorization handling.
