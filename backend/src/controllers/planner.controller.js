@@ -69,7 +69,7 @@ export const generatePlan = asyncHandler(async (req, res) => {
         data: {
           name: t.title,
           time: taskTime,
-          duration: 60,
+          duration: t.duration || 60,
           date: taskDate,
           status: 'PENDING',
           isAiGenerated: true,
@@ -79,6 +79,7 @@ export const generatePlan = asyncHandler(async (req, res) => {
           editable: true
         }
       });
+
 
       createdTasks.push(newTask);
     }

@@ -12,33 +12,41 @@ const CATEGORY_RULES = {
 
 /**
  * Rule-based Fallback Categorization
- * Assigns categories based on keywords if AI fails.
  */
 export const fallbackCategorize = (prompt) => {
-  console.log("Using Rule-based Fallback Categorization...");
+  console.log("Using Improved Rule-based Fallback Categorization...");
   
   const lines = prompt.split(/[,\n]| and /).map(s => s.trim()).filter(Boolean);
-  
-  const tasksByCat = {
-    Workout: [],
-    Academics: [],
-    Personal: []
-  };
+  const tasksByCat = { Workout: [], Academics: [], Personal: [] };
 
   lines.forEach(line => {
     let assigned = false;
     const lowerLine = line.toLowerCase();
     
+    // Attempt to extract duration (e.g., "1 hour", "30 min")
+    let duration = 60;
+    const hourMatch = lowerLine.match(/(\d+)\s*hour/);
+    const minMatch = lowerLine.match(/(\d+)\s*min/);
+    if (hourMatch) duration = parseInt(hourMatch[1]) * 60;
+    else if (minMatch) duration = parseInt(minMatch[1]);
+
+    // Clean title: Remove duration and time markers, then uppercase
+    let title = line
+      .replace(/for\s+\d+\s*(hour|hr|min)s?/gi, '')
+      .replace(/at\s+\d+(:?\d+)?\s*(am|pm)?/gi, '')
+      .trim()
+      .toUpperCase();
+
     if (CATEGORY_RULES.Workout.some(kw => lowerLine.includes(kw))) {
-      tasksByCat.Workout.push({ title: line, time: "09:00" });
+      tasksByCat.Workout.push({ title, time: "09:00", duration });
       assigned = true;
     } else if (CATEGORY_RULES.Academics.some(kw => lowerLine.includes(kw))) {
-      tasksByCat.Academics.push({ title: line, time: "10:00" });
+      tasksByCat.Academics.push({ title, time: "10:00", duration });
       assigned = true;
     }
 
     if (!assigned) {
-      tasksByCat.Personal.push({ title: line, time: "12:00" });
+      tasksByCat.Personal.push({ title, time: "12:00", duration });
     }
   });
 
@@ -54,23 +62,21 @@ export const fallbackCategorize = (prompt) => {
  */
 export const generateSchedule = async (userPrompt, todayDateStr, userGeminiApiKey = null) => {
   const systemPrompt = `You are an expert scheduler for GoalX. 
-Categorize the user's tasks into exactly these three categories: "Workout", "Academics", or "Personal".
+Categorize the user's tasks into exactly: "Workout", "Academics", or "Personal".
 
-RULES:
-1. MAINTAIN EXACT TIMES: Use the times provided by the user (e.g., "5pm" -> "17:00"). If no time is provided, default to a logical time.
-2. CATEGORIZATION:
-   - Workout: gym, running, exercise, etc.
-   - Academics: study, college, class, exam, etc.
-   - Personal: everything else.
-3. OUTPUT FORMAT: Return ONLY a valid JSON object. No extra text, no markdown blocks.
+STRICT RULES:
+1. TITLES: Extract ONLY the core action as the title (e.g., "STUDY", "GYM", "MATH"). Always use UPPERCASE.
+2. DURATION: Calculate the duration in minutes. (e.g., "1 hour" -> 60, "1.5 hours" -> 90, "2 hours" -> 120).
+3. MAINTAIN EXACT TIMES: Use the start times provided by the user (e.g., "4pm" -> "16:00").
+4. OUTPUT FORMAT: Return ONLY a valid JSON object.
 
 JSON STRUCTURE:
 {
   "categories": [
     {
-      "category": "Workout",
+      "category": "Academics",
       "tasks": [
-        { "title": "Gym", "time": "17:00" }
+        { "title": "STUDY", "time": "16:00", "duration": 60 }
       ]
     }
   ]
@@ -78,6 +84,7 @@ JSON STRUCTURE:
 
 USER INPUT:
 "${userPrompt}"`;
+
 
   let lastError = null;
 
