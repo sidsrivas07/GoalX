@@ -37,11 +37,11 @@ export default function ProfilePage() {
     try {
       const updated = await api.put('/auth/profile', {
         name,
-        email,
         age: age ? parseInt(age) : null,
         country
       });
       setUser(prev => ({ ...prev, ...updated }));
+
       setIsEditing(false);
       setIsPrivacyEditing(false);
       setSaveStatus('saved');
@@ -89,16 +89,11 @@ export default function ProfilePage() {
               value={name} 
               onChange={(e) => setName(e.target.value)} 
             />
-            <input 
-              placeholder="Email" 
-              value={email} 
-              onChange={(e) => setEmail(e.target.value)} 
-            />
           </div>
         ) : (
           <div className="profile-info">
             <h2 className="profile-name">{user.name || 'Anonymous'}</h2>
-            <p className="profile-email">{user.email || 'anonymous@goalx.app'}</p>
+            <p className="profile-email" style={{ opacity: 0.5 }}>{user.country || 'Global User'}</p>
           </div>
         )}
 
@@ -108,6 +103,7 @@ export default function ProfilePage() {
         >
           {isEditing ? <Save size={16} /> : 'Edit'}
         </button>
+
       </div>
 
       {/* Save Status Toast */}
@@ -265,7 +261,7 @@ export default function ProfilePage() {
       </div>
 
       <div className="profile-version-footer">
-        GoalX v1.10.0
+        GoalX v1.11.0
       </div>
     </motion.div>
   );

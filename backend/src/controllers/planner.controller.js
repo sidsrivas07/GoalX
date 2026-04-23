@@ -11,30 +11,30 @@ export const generatePlan = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Prompt is required");
   }
 
-  // 1. Get today's local date/time context
   const today = new Date();
   const todayDateStr = today.toISOString().split('T')[0];
   const userApiKey = req.headers['x-gemini-key'];
   
-  // 2. Query Gemini with the advanced prompt
-  const tasks = await generateSchedule(prompt, todayDateStr, userApiKey);
+  // 1. Get structured schedule from AI
+  const aiResponse = await generateSchedule(prompt, todayDateStr, userApiKey);
 
-  if (!tasks || tasks.length === 0) {
+  if (!aiResponse || !aiResponse.categories || aiResponse.categories.length === 0) {
     return res.status(200).json(new ApiResponse(200, [], "AI returned no tasks for this request."));
   }
 
   const createdTasks = [];
 
-  for (const t of tasks) {
-    const categoryName = t.category || 'Miscellaneous';
+  // 2. Iterate through categories
+  for (const catGroup of aiResponse.categories) {
+    const categoryName = catGroup.category || 'Personal';
     
-    // Find or create category
+    // Find or create category for this user
     let category = await prisma.category.findFirst({
       where: {
         userId: req.user.id,
         name: {
           equals: categoryName,
-          mode: 'insensitive' // Be forgiving with casing
+          mode: 'insensitive'
         }
       }
     });
@@ -44,44 +44,52 @@ export const generatePlan = asyncHandler(async (req, res) => {
         data: {
           name: categoryName,
           userId: req.user.id,
-          accentColor: '#3B82F6' // Default Blue
+          accentColor: categoryName === 'Workout' ? '#10B981' : (categoryName === 'Academics' ? '#6366F1' : '#F59E0B')
         }
       });
     }
 
-    // Parse 24h time "HH:MM"
-    const [hours, mins] = t.time.includes(':') 
-      ? t.time.split(':').map(n => parseInt(n))
-      : [9, 0];
-    
-    // For specific date, use today or the AI-specified date
-    // Note: If recurrence is DAILY, the date field is less critical for the master record
-    // but the getTasksByDate query will still use it.
-    const taskDate = new Date(todayDateStr);
-    taskDate.setUTCHours(12, 0, 0, 0);
-
-    const taskTime = new Date(taskDate);
-    taskTime.setUTCHours(hours, mins, 0, 0);
-
-    const newTask = await prisma.task.create({
-      data: {
-        name: t.name,
-        time: taskTime,
-        duration: t.duration || 60,
-        date: taskDate,
-        status: t.status || 'PENDING',
-        isAiGenerated: true,
-        categoryId: category.id,
-        categoryType: t.categoryType || 'MISC',
-        recurrence: t.recurrence || 'NONE',
-        editable: t.editable !== undefined ? t.editable : true
+    // 3. Create tasks within this category
+    for (const t of catGroup.tasks) {
+      // Parse 24h time "HH:MM"
+      let hours = 12, mins = 0;
+      if (t.time && t.time.includes(':')) {
+        const parts = t.time.split(':').map(n => parseInt(n));
+        if (!isNaN(parts[0])) hours = parts[0];
+        if (!isNaN(parts[1])) mins = parts[1];
       }
-    });
 
-    createdTasks.push(newTask);
+      const taskDate = new Date(todayDateStr);
+      taskDate.setUTCHours(12, 0, 0, 0);
+
+      const taskTime = new Date(taskDate);
+      taskTime.setUTCHours(hours, mins, 0, 0);
+
+      const newTask = await prisma.task.create({
+        data: {
+          name: t.title,
+          time: taskTime,
+          duration: 60,
+          date: taskDate,
+          status: 'PENDING',
+          isAiGenerated: true,
+          categoryId: category.id,
+          categoryType: categoryName.toUpperCase(),
+          recurrence: 'NONE',
+          editable: true
+        }
+      });
+
+      createdTasks.push(newTask);
+    }
   }
 
+  // 4. Return structured response for frontend rendering
   res.status(201).json(
-    new ApiResponse(201, { count: createdTasks.length }, "AI Schedule successfully applied")
+    new ApiResponse(201, { 
+      count: createdTasks.length,
+      plan: aiResponse 
+    }, "AI Schedule successfully applied and categorized")
   );
 });
+

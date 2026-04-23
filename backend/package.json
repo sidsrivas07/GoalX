@@ -1,6 +1,6 @@
 {
   "name": "goalx-backend",
-  "version": "1.0.0",
+  "version": "1.11.0",
   "description": "GoalX — AI-powered productivity backend",
   "type": "module",
   "main": "src/server.js",

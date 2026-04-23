@@ -103,12 +103,27 @@ export default function HomePage({ categories, selectedDate, onSelectDate, onCat
             })}
           </div>
         ) : (
-          <div className="categories-empty-state">
-            <Sparkles size={28} style={{ color: 'var(--orange-primary)', marginBottom: '8px' }} />
-            <p>No categories yet</p>
-            <span>Tap the + button to generate your first AI schedule</span>
+          <div className="categories-empty-setup-card">
+            <div className="empty-setup-header">
+              <Sparkles size={24} className="sparkle-icon-animated" />
+              <div className="empty-setup-texts">
+                <h3>Start Your AI Journey</h3>
+                <p>Generate a personalized plan to unlock your peak potential.</p>
+              </div>
+            </div>
+            <div className="empty-setup-steps">
+               <div className="setup-step-item">
+                  <div className="step-dot" />
+                  <span>Personalized categorization</span>
+               </div>
+               <div className="setup-step-item">
+                  <div className="step-dot" />
+                  <span>Optimized focus blocks</span>
+               </div>
+            </div>
           </div>
         )}
+
       </section>
     </motion.div>
   );

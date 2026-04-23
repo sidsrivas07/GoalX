@@ -122,21 +122,25 @@ export const getMe = asyncHandler(async (req, res) => {
     new ApiResponse(200, user, 'User details retrieved')
   );
 });
-/**
- * PUT /api/auth/profile
- * Update user's personal details
- */
 export const updateProfile = asyncHandler(async (req, res) => {
-  const { name, email, age, country } = req.body;
+  const { name, age, country } = req.body;
+
+  // For anonymous user, we specifically DON'T update email to avoid unique constraint conflicts
+  // with existing real accounts like sid.srivas0402@gmail.com
+  const updateData = {};
+  
+  if (name !== undefined) updateData.name = name;
+  if (country !== undefined) updateData.country = country;
+  
+  // Safe integer parsing for Age
+  if (age !== undefined) {
+    const parsedAge = parseInt(age);
+    updateData.age = isNaN(parsedAge) ? null : parsedAge;
+  }
 
   const updatedUser = await prisma.user.update({
     where: { id: req.user.id },
-    data: {
-      name: name !== undefined ? name : undefined,
-      email: email !== undefined ? email : undefined,
-      age: age !== undefined ? parseInt(age) : undefined,
-      country: country !== undefined ? country : undefined,
-    },
+    data: updateData,
     select: {
       id: true,
       email: true,
@@ -150,3 +154,4 @@ export const updateProfile = asyncHandler(async (req, res) => {
     new ApiResponse(200, updatedUser, 'Profile updated successfully')
   );
 });
+

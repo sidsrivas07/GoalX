@@ -122,8 +122,9 @@
   background: linear-gradient(135deg, var(--orange-primary), var(--orange-bright));
   border-color: transparent;
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px var(--orange-glow);
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.35); /* Centered and softer glow */
 }
+
 
 .cal-week-day.selected .cal-week-day-name {
   color: rgba(255, 255, 255, 0.8);
